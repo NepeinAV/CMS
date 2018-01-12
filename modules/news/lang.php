@@ -1,0 +1,13 @@
+<?php
+$LANG = ["eng" => ["MODULE_TITLE" => "News",
+        "title" => "News",
+        "mainphr" => "English",
+        "choose" => "Select the language"
+    ],
+    "ru" => [
+        "title" => "Новости",
+        "mainphr" => "Русский",
+        "choose" => "Выберите язык"
+    ]
+];
+?>
