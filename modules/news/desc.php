@@ -1,3 +1,3 @@
 <?php
-$MODULE_TITLE = 'Заголовок';
+    $MODULE_TITLE = 'Заголовок';
 ?>
