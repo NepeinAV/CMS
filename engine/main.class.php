@@ -1,9 +1,9 @@
 <?php
-    class main{
-        public function __construct() {
-            
+    class main
+    {
+        public function __construct()
+        {
         }
     }
 
     $MAIN = new main;
-?>

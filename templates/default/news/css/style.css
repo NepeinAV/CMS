@@ -1,0 +1,23 @@
+* {
+    box-sizing: border-box;
+    font: 14px arial;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+}
+
+.flex {
+    display: flex;
+}
+
+aside {
+    width: 300px;
+    position: relative;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    background: #ddd;
+}

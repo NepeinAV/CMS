@@ -2,7 +2,6 @@ php_value register_globals 0
 RewriteEngine on
 RewriteBase /
 RewriteRule .htaccess - [F]
-RewriteRule lang.php - [F]
 RewriteCond %{REQUEST_URI} /$
 RewriteRule ^(.{2,3}) /$1 [L,R=301]
 RewriteRule ^([a-z]{2,3})$ ?lang=$1 [L]
