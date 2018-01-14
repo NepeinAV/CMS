@@ -1,23 +1,452 @@
+@font-face {
+    font-family: Logo;
+    src: url('../fonts/logo.otf') format('opentype');
+}
+
+:root {
+    --main-color: #33cdc7;
+    --link-color: #4a0971;
+    --h1-size: 29px;
+    --max-width: 1280px;
+}
+
 * {
     box-sizing: border-box;
-    font: 14px arial;
 }
 
 body {
+    background: #efefef;
+    font: 100 17px Calibri;
     margin: 0;
-    padding: 0;
+}
+
+input {
+    border: none;
+    outline: none;
+}
+
+a {
+    color: black;
+    text-decoration: none;
+}
+
+a:hover {
+    color: black;
+    text-decoration: underline;
+}
+
+a:focus {
+    color: black;
+    text-decoration: none;
+}
+
+footer {
+    padding: 20px;
+}
+
+header {
+    background: #33cdc7;
+}
+
+header>div.wrap {
+    height: 78px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1 {
+    margin: 0 0 20px 0;
+    font-size: 29px;
+}
+
+main {
+    background: white;
+}
+
+
+/*Ограничитель ширины*/
+
+.wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+
+/*Левая и правая колонки*/
+
+#left {
+    min-width: 301px;
     background: #fff;
 }
+
+#right {
+    border-left: 2px solid #eee;
+    padding: 21px 30px;
+    background: #fff;
+    width: 100%;
+}
+
+#right a {
+    color: #4a0971;
+}
+
+#right a:hover {
+    text-decoration: underline;
+}
+
+
+/*Стили для меню*/
+
+.menu {
+    margin-top: 20px;
+    padding: 0 35px;
+}
+
+.menu a {
+    line-height: 21px;
+}
+
+.menu a:hover {
+    text-decoration: underline;
+}
+
+.menu li {
+    padding: 7px 0;
+    list-style: none;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.line {
+    height: 1px;
+    background: #666;
+    padding: 0 !important;
+    margin: 14px 0;
+}
+
+.toOpen {
+    display: none;
+    text-align: center;
+    height: 31px;
+    padding: 0;
+    cursor: pointer;
+}
+
+
+/*Логотип*/
+
+.logo {
+    padding: 0 0 0 30px;
+    font: 100 30px Logo, Arial;
+    text-shadow: -1px 1px 0 #eaeaea;
+}
+
+.logo:hover {
+    text-decoration: none;
+}
+
+
+/*Набор уголков*/
+
+.angle {
+    border: 7px solid transparent;
+    max-height: 14px;
+    cursor: pointer;
+}
+
+.angleRight:after {
+    content: '';
+    border: 5px solid transparent;
+    border-left: 5px solid black;
+    margin-left: 8px;
+    display: inline-block;
+}
+
+.angleDown {
+    border-top: 7px solid #ccc;
+    margin: 7px 0 0 8px;
+}
+
+.angleUp {
+    border-bottom: 7px solid #ccc;
+    margin: 0 0 0 8px;
+}
+
+.angleDown:hover,
+.toOpen:hover .angleDown {
+    border-top-color: black;
+}
+
+.angleUp:hover,
+.toOpen:hover .angleUp {
+    border-bottom-color: black;
+}
+
+
+/*Стили для списка букв*/
+
+.letters {
+    font-size: 15px;
+    padding: 14px 24px;
+    line-height: 30px;
+    background: #f9f9f9;
+    min-height: 58px;
+    box-shadow: inset 0 -8px 11px -11px #CCC;
+}
+
+.letters a {
+    padding: 6px 6px 4px 6px;
+    font: 800 14px "open sans", sans-serif;
+    color: #555;
+    border-bottom: 2px solid transparent;
+}
+
+.letters a:hover {
+    text-decoration: none;
+    border-bottom: 2px solid #222;
+    color: #222;
+}
+
+
+/*Акцент*/
+
+.split {
+    padding: 17px 30px;
+    background: #f8f8f8;
+    margin: 0 -30px;
+    line-height: 30px;
+}
+
+
+/*Ссылочный список*/
+
+h4.sort {
+    display: flex;
+}
+
+h4.sort:first-of-type {
+    border-top: 1px solid #efefef;
+    padding-top: 20px;
+}
+
+.sa {
+    flex-wrap: wrap;
+    display: flex;
+}
+
+.sa a {
+    margin-right: 14px;
+    padding-bottom: 7px;
+}
+
+
+/*Стили для списка стран*/
+
+.cntrs {
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.cntrs>a {
+    margin-top: 17px;
+}
+
+.country {
+    min-width: 220px;
+    display: flex;
+    align-items: center;
+}
+
+.country>.img {
+    width: 37px;
+    height: 37px;
+    border-radius: 100%;
+    border: 1px solid #837b8a;
+    background-position: -14px -14px;
+}
+
+.country>.name {
+    margin-left: 15px;
+}
+
+
+/*Flex styles*/
 
 .flex {
     display: flex;
 }
 
-aside {
-    width: 300px;
-    position: relative;
-    top: 0;
-    bottom: 0;
+.flexc {
+    flex-direction: column;
+}
+
+.flexr {
+    flex-direction: row;
+}
+
+
+/*Раскрывающееся меню*/
+
+#openBut {
+    display: none;
+}
+
+#openBut~label {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+#openBut+label:before {
+    content: '';
+    border: 7px solid transparent;
+    border-top: 7px solid #ccc;
+    margin-top: 6px;
+}
+
+#openBut:checked+label:before {
+    border-color: transparent;
+    border-bottom: 7px solid black;
+    margin-top: -10px;
+}
+
+#openBut:checked~ul {
+    height: 393px;
+}
+
+
+/*Формы поиска*/
+
+.find {
+    display: none;
+    transition: all 0.1s ease-in-out;
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    border-radius: 100%;
+    width: 60px;
+    height: 60px;
+    background: #33cdc7 url(../flags/search.svg) 50% 50%/34% no-repeat;
+    z-index: 1;
+    cursor: pointer;
+}
+
+#pageOpen {
+    display: none;
+}
+
+#pageOpen:checked+.find {
+    background: #33cdc7 url(../flags/close.svg) 50% 50%/44% no-repeat;
+}
+
+#pageOpen:checked~.findpage {
+    display: flex;
+    bottom: 0px;
+    animation: find 0.2s ease-in-out both;
+}
+
+.findpage {
+    position: fixed;
+    bottom: -106px;
     left: 0;
-    background: #ddd;
+    right: 0;
+    padding: 25px;
+    flex-direction: column;
+}
+
+main::backdrop {
+    content: '';
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.findpage>div {
+    display: inherit;
+    border: 2px solid black;
+    border-radius: 25px;
+    overflow: hidden;
+    background: white;
+}
+
+#searchform {
+    height: 31px;
+    font: 400 16px Calibri;
+    border-radius: 25px;
+    width: 200px;
+    color: white;
+    padding: 0 10px 0 35px;
+    margin-right: 30px;
+    background: #25afa9 url(../flags/search.svg) 8px center/17px no-repeat;
+    transition: all 0.2s ease-in-out;
+}
+
+#searchform:focus {
+    background: white url(../flags/search.svg) 8px center/17px no-repeat;
+    color: black;
+    width: 240px;
+}
+
+#searchformmob {
+    width: 100%;
+    height: 40px;
+    font: 400 16px Calibri;
+    color: black;
+    padding: 0 10px 0 35px;
+    background: transparent url(../flags/search.svg) 10px center/17px no-repeat;
+}
+
+#searchbutmob {
+    background: transparent url(../flags/next.svg) 8px center/17px no-repeat;
+    width: 41px;
+    cursor: pointer;
+}
+
+@keyframes find {
+    from {
+        transform: scaleY(0.8) scaleX(0.95) rotateX(-30deg);
+    }
+    to {
+        transform: scaleY(1) scaleX(1) rotateX(0deg);
+    }
+}
+
+
+/*Adaptive design*/
+
+@media screen and (min-width: 481px) {
+    .findpage {
+        display: none !important;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    #right {
+        border-top: 2px solid #eee;
+        border-left: none;
+    }
+    .flexr {
+        flex-direction: column;
+    }
+    #openBut+label {
+        display: flex;
+    }
+    .menu {
+        height: 0px;
+        overflow: hidden;
+        margin: 0;
+        transition: height 0.2s ease-in-out;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    #searchform,
+    .letters {
+        display: none;
+    }
+    .find {
+        display: block;
+    }
+    #pageOpen:checked~.find {
+        bottom: 81px;
+    }
 }

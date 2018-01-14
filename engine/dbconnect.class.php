@@ -4,7 +4,7 @@
         private $connection;
         public function __construct()
         {
-            $data = json_decode(file_get_contents(__ROOT . '/engine/dbaccess.json'), true);
+            $data = json_decode(file_get_contents('./engine/dbaccess.json'), true);
             return $this->connectdb($data);
         }
         private function connectdb($data)
