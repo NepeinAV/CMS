@@ -2,7 +2,13 @@ php_value register_globals 0
 RewriteEngine on
 RewriteBase /
 RewriteRule .htaccess - [F]
-RewriteCond %{REQUEST_URI} /$
-RewriteRule ^(.{2,3}) /$1 [L,R=301]
-RewriteRule ^([a-z]{2,3})$ ?lang=$1 [L]
-RewriteRule ^([a-z]{2,3})/(.+)$ ?lang=$1&module=$2 [L]
+# Adding / to the end
+RewriteCond %{REQUEST_URI} [a-z]$
+RewriteRule ^(.+) /$1/ [L,R=301]
+# Common rules
+RewriteRule ^([a-z]{2,3})/$ ?lang=$1 [L]
+RewriteRule ^([a-z]+)/$ ?module=$1 [L]
+RewriteRule ^([a-z]+)/([a-z]{2,3})/$ ?module=$1&lang=$2 [L]
+# Specially for news module
+RewriteRule ^(news)/(\d+)/$ ?module=$1:fullarticle&id=$2 [L]
+RewriteRule ^(news)/(\d+)/([a-z]{2,3})/$ ?module=$1:fullarticle&id=$2&lang=$3 [L]

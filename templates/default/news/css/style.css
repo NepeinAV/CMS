@@ -44,11 +44,11 @@ footer {
     padding: 20px;
 }
 
-header {
+header.header {
     background: #33cdc7;
 }
 
-header>div.wrap {
+header.header>div.wrap {
     height: 78px;
     justify-content: space-between;
     align-items: center;
@@ -408,6 +408,23 @@ main::backdrop {
     to {
         transform: scaleY(1) scaleX(1) rotateX(0deg);
     }
+}
+
+article {
+    margin-bottom: 20px;
+}
+
+.article__title {
+    margin-bottom: 10px;
+}
+
+.article__title a {
+    color: black !important;
+}
+
+.article__text {
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
 
 

@@ -4,9 +4,14 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width" />
-        <title><?print(Modules::getTitle());?></title>
+        <title><?print(Modules::getTitle());?> - полная новость</title>
         <link rel="stylesheet" href="/templates/default/news/css/style.css" />
         <script src="/templates/default/news/js/script.js"></script>
+        <style>
+            .article__next{
+                display: none;
+            }
+        </style>
     </head>
 
     <body>
@@ -17,7 +22,7 @@
             <div class="flex flexr">
                 <?echo Template::addTmp('menu');?>
                 <div id="right">
-                    <?echo News::showArticles();?>
+                    <?echo Template::addTmp('article');?>
                 </div>
             </div>
         </main>

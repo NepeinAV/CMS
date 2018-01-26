@@ -19,4 +19,4 @@
     require_once('./engine/modules.class.php');
     require_once('./engine/localization.class.php');
     require_once('./engine/tmp.class.php');
-    $modules = [];
+    $MODULES = [];

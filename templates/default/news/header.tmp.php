@@ -6,7 +6,7 @@
         <input type="button" id="searchbutmob" value=" ">
     </div>
 </div>
-<header>
+<header class="header">
     <div class="wrap flex">
         <a href="/" class="logo">Всё о именах</a>
         <input type="text" name="searchform" id="searchform">

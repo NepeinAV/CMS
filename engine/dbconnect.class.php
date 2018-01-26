@@ -1,5 +1,5 @@
 <?php
-    class dbcon
+    class DBconnect
     {
         private $connection;
         public function __construct()
@@ -18,7 +18,12 @@
         }
         public function query($query)
         {
-            return $this->connection->query($query);
+            $result = $this->connection->query($query);
+            if ($result) {
+                return $this->connection->query($query);
+            } else {
+                exit("Ошибка в запросе/Нет соединения с базой данных");
+            }
         }
     }
-    $DB = new dbcon;
+    $DB = new DBconnect;
