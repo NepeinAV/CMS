@@ -4,7 +4,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width" />
-        <title><?print(Modules::getTitle());?></title>
+        <title><?echo Modules::getTitle();?></title>
         <link rel="stylesheet" href="/templates/default/news/css/style.css" />
         <script src="/templates/default/news/js/script.js"></script>
     </head>
@@ -13,14 +13,12 @@
 
         <?echo Template::addTmp('header');?>
 
-        <main class="wrap flex flexc">
-            <div class="flex flexr">
-                <?echo Template::addTmp('menu');?>
-                <div id="right">
-                    <?echo News::showArticles();?>
-                </div>
-            </div>
+        <?echo Template::addTmp('menu');?>
+
+        <main class="wrap">
+            <?echo News::showArticles();?>
         </main>
+        
         <?echo Template::addTmp('footer');?>
         
     </body>
