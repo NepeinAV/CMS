@@ -22,7 +22,7 @@ class Modules
         return json_decode(file_get_contents('./modules/' . $module . '/settings.json'), true);
     }
 
-    public static function getTitle()
+    public static function getModuleTitle()
     {
         global $MODULES;
         if (Localization::getPhrase('MODULE_TITLE')) {

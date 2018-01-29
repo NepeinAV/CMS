@@ -4,7 +4,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width" />
-        <title><?echo Modules::getTitle();?></title>
+        <title><?echo Modules::getModuleTitle();?></title>
         <link rel="stylesheet" href="/templates/default/news/css/style.css" />
         <script src="/templates/default/news/js/script.js"></script>
     </head>
