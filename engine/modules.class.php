@@ -13,7 +13,7 @@ class Modules
             include('./templates/' . __TEMPLATE  . '/' . $module . '/' . $type . '.tmp.php');
             return trim(ob_get_clean());
         } else {
-            exit("404");
+            Main::pageNotFound();
         }
     }
 

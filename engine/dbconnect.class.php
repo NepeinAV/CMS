@@ -5,7 +5,8 @@
         public function __construct()
         {
             $data = json_decode(file_get_contents('./engine/dbaccess.json'), true);
-            return $this->connectdb($data);
+            $this->connectdb($data);
+            $this->query("SET NAMES 'utf8'");
         }
         private function connectdb($data)
         {
@@ -19,11 +20,7 @@
         public function query($query)
         {
             $result = $this->connection->query($query);
-            if ($result) {
-                return $this->connection->query($query);
-            } else {
-                exit("Ошибка в запросе/Нет соединения с базой данных");
-            }
+            return $result;
         }
     }
     $DB = new DBconnect;

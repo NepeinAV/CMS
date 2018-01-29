@@ -16,7 +16,7 @@
 
 body {
     background: white;
-    font: 100 14px Calibri;
+    font: 100 15px Calibri;
     margin: 0;
 }
 
@@ -31,7 +31,7 @@ a {
 }
 
 a:hover {
-    color: black;
+    color: #4a0971;
     text-decoration: underline;
 }
 
@@ -50,16 +50,16 @@ header.header {
 }
 
 section.menu {
-    border-top: 1px solid #444;
-    border-bottom: 1px solid #444;
     list-style: none;
     display: flex;
     justify-content: center;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    font-size: 18px;
 }
 
 section.menu a {
-    padding: 18px 10px;
+    color: #4a0971;
+    padding: 18px 20px;
 }
 
 section.logo {
@@ -75,4 +75,36 @@ section.logo {
     height: 200px;
 }
 
-.logo-text {}
+.logo-text {
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+main.wrap {
+    padding: 0 40px;
+}
+
+article {
+    border-bottom: 1px solid #ddd;
+    padding: 0px 0 30px 0;
+}
+
+article:last-child {
+    border: none;
+}
+
+.article__title {
+    font: 800 30px Calibri;
+}
+
+.article__info {
+    margin-top: 20px;
+}
+
+.pagenav {
+    margin-top: 30px;
+}
+
+.pagenav a {
+    padding-right: 20px;
+}

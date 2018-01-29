@@ -1,5 +1,5 @@
 {
     "MODULE_NAME": "news",
     "MODULE_TITLE": "Новости",
-    "ARTICLE_LIMIT": 10
+    "ARTICLE_LIMIT": 3
 }

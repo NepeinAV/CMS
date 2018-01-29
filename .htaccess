@@ -3,16 +3,18 @@ RewriteEngine on
 RewriteBase /
 RewriteRule .htaccess - [F]
 # Adding / to the end
-RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_URI} !(.*)/$
+RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.+) /$1/ [L,R=301]
 # Common rules
+RewriteRule ^404/$ /404.php [L]
 RewriteRule ^([a-z]{2,3})/$ ?lang=$1 [L]
-RewriteRule ^([a-z]+)/$ ?module=$1 [L]
-RewriteRule ^([a-z]+)/([a-z]{2,3})/$ ?module=$1&lang=$2 [L]
 # Specially for 'news' module
+RewriteRule ^(news)/$ ?module=$1 [L]
+RewriteRule ^(news)/page-(\d+)/$ ?module=$1&page_id=$2 [L]
 RewriteRule ^(news)/(\d+)/$ ?module=$1:fullarticle&id=$2 [L]
 RewriteRule ^(news)/(\d+)/([a-z]{2,3})/$ ?module=$1:fullarticle&id=$2&lang=$3 [L]
+ErrorDocument 404 /404/
 <FilesMatch ".(css)$">
     Header unset Cache-Control
 </FilesMatch>

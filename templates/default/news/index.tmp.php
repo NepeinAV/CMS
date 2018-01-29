@@ -17,9 +17,8 @@
 
         <main class="wrap">
             <?echo News::showArticles();?>
+            <section class="pagenav"><?echo News::getPages();?></section>
         </main>
-        
-        <?echo Template::addTmp('footer');?>
         
     </body>
 
