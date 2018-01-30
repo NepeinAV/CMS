@@ -4,9 +4,11 @@ class Modules
     public static function getModule($type = 'index', $module = __MODULE)
     {
         global $MODULES;
+        $type = strtolower($type);
+        $module = strtolower($module);
         if (file_exists('./templates/' . __TEMPLATE  . '/' . $module . '/' . $type . '.tmp.php')) {
             require_once('./modules/' . $module . '/' . $module . '.class.php');
-            if (!isset($modules[$module])) {
+            if (!isset($MODULES[$module])) {
                 $MODULES[$module] = new $module();
             }
             ob_start();

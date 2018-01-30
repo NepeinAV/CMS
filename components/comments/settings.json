@@ -1,0 +1,7 @@
+{
+    "COMPONENT_NAME": "comments",
+    "LIMIT": 2,
+    "SQLTABLES": {
+        "news": "newscomments"
+    }
+}

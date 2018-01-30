@@ -1,0 +1,7 @@
+{
+    "COMPONENT_NAME": "pagenavigator",
+    "SQLTABLES": {
+        "news": "news",
+        "news_comments": "newscomments"
+    }
+}

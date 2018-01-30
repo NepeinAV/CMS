@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html lang="ru">
 
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width" />
-        <title><?echo Modules::getModuleTitle();?></title>
-        <link rel="stylesheet" href="/templates/default/news/css/style.css" />
-        <script src="/templates/default/news/js/script.js"></script>
-    </head>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>
+        <?echo Modules::getModuleTitle();?>
+    </title>
+    <link rel="stylesheet" href="/templates/default/news/css/style.css" />
+    <script src="/templates/default/news/js/script.js"></script>
+</head>
 
-    <body>
+<body>
 
-        <?echo Template::addTmp('header');?>
+    <?echo Template::addTmp('header');?>
 
         <?echo Template::addTmp('menu');?>
 
-        <main class="wrap">
-            <?echo News::showArticles();?>
-            <section class="pagenav"><?echo News::getPages();?></section>
-        </main>
-        
-    </body>
+            <main class="wrap">
+                <?echo News::showArticles();?>
+                    <?echo Components::getComponent('pagenavigator', 'news');?>
+            </main>
+
+</body>
 
 </html>
