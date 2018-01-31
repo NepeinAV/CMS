@@ -14,11 +14,11 @@
     define('__MODULE', $modact[0]);
     define('__ACTION', $modact[1]);
     require_once('./engine/dbconnect.class.php');
-    require_once('./engine/main.class.php');
     require_once('./engine/rdset.class.php');
+    require_once('./engine/main.class.php');
+    require_once('./engine/localization.class.php');
     require_once('./engine/modules.class.php');
     require_once('./engine/components.class.php');
-    require_once('./engine/localization.class.php');
     require_once('./engine/tmp.class.php');
     require_once('./engine/user.class.php');
     $MODULES = [];

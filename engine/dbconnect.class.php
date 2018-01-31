@@ -14,7 +14,7 @@
             if (!$mysqli->connect_error) {
                 $this->connection = $mysqli;
             } else {
-                die('Ошибка подключения к базе данных');
+                die('Ошибка подключения к базе данных. ' . $mysqli->connect_error);
             }
         }
         public function query($query)

@@ -3,29 +3,39 @@ class User
 {
     public function __construct()
     {
-        if (filter_input(INPUT_POST, 'signin', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE)) {
-            $name = filter_input(INPUT_POST, 'name', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
-            $password = filter_input(INPUT_POST, 'password', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
+        if (isset($_POST['signin'])) {
+            $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
+            $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
             return User::signIn($name, $password);
         }
         
-        if (filter_input(INPUT_POST, 'reg', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE)) {
-            $name = filter_input(INPUT_POST, 'name', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
-            $password = filter_input(INPUT_POST, 'password', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
-            return User::regUser($name, $password);
+        if (isset($_POST['reg_user'])) {
+            $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
+            $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
+            $passwordr = filter_input(INPUT_POST, 'passwordr', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
+            return User::regUser($name, $password, $passwordr);
         }
 
-        if (filter_input(INPUT_GET, 'logout', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE)) {
-            User::signOut();
+        if (isset($_GET['logout']) && $_GET['logout'] == true) {
+            User::logOutUser();
         }
     }
 
-    public static function regUser($name, $password)
+    public static function regUser($name, $password, $passwordr)
     {
         global $DB;
-        if ($name && $password) {
-            $password = md5(md5($password));
-            $result = $DB->query('INSERT INTO users (name, password) VALUES (' . $name . ',' . $password . ')');
+
+        if (count(preg_grep('/^[a-zA-Z0-9_]{4,}$/', [$name, $password, $passwordr])) == 3) {
+            if ($password === $passwordr) {
+                $password = md5(md5($password));
+                $result = $DB->query('INSERT INTO users (name, password) VALUES ("' . $name . '","' . $password . '")');
+                if (!$result) {
+                    return "Ошибка базы данных";
+                } else {
+                    User::signIn($name, $passwordr);
+                    header('Location: /');
+                }
+            }
         }
     }
 
@@ -43,7 +53,7 @@ class User
         }
     }
 
-    public function signOut()
+    public static function logOutUser()
     {
         if (isset($_SESSION['user_data'])) {
             unset($_SESSION['user_data']);
@@ -51,17 +61,29 @@ class User
         }
     }
 
-    public static function getCurrUserField($field)
+    public static function getCurrUserData($field)
     {
         if (isset($_SESSION['user_data'][$field])) {
             return $_SESSION['user_data'][$field];
         }
+        return false;
     }
 
     public static function isUserSignedIn()
     {
         if (isset($_SESSION['user_data'])) {
             return true;
+        }
+        return false;
+    }
+
+    public static function getUserDataByID($user_id, $field)
+    {
+        global $DB;
+        
+        $result = $DB->query('SELECT ' . $field . ' FROM users WHERE id=' . $user_id);
+        if ($result->num_rows) {
+            return $result->fetch_assoc()[$field];
         }
         return false;
     }

@@ -1,6 +1,6 @@
 {
-    "host":"localhost",
-    "login":"root",
-    "pass":"",
-    "table":"php"
+    "host": "localhost",
+    "login": "root",
+    "pass": "",
+    "table": "php"
 }

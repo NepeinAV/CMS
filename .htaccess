@@ -10,13 +10,14 @@ RewriteRule ^(.+) /$1/ [L,R=301]
 # Common rules
 RewriteRule ^index.php$ / [L,R=301]
 RewriteRule ^404/$ /404.php [L]
-RewriteRule ^([a-z]{2,3})/$ ?lang=$1 [L]
 RewriteRule ^logout/$ ?logout=true [L]
 # Specially for 'news' module
 RewriteRule ^(news)/$ ?module=$1 [L]
 RewriteRule ^(news)/page-(\d+)/$ ?module=$1&page_id=$2 [L]
 RewriteRule ^(news)/(\d+)/$ ?module=$1:fullarticle&id=$2 [L]
 RewriteRule ^(news)/(\d+)/page-(\d+)/$ ?module=$1:fullarticle&id=$2&page_id=$3 [L]
+# 'pages' module
+RewriteRule ^(pages)/(.+)/$ ?module=$1:$2 [L]
 ErrorDocument 404 /404/
 </ifModule>
 <FilesMatch "\.(css)$">

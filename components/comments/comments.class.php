@@ -10,6 +10,13 @@ class Comments extends Components
         if ($p_module) {
             $this->settings['p_module'] = $p_module;
         }
+
+        if (isset($_POST['addcomment'])) {
+            $text = filter_input(INPUT_POST, 'text', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
+            if ($text) {
+                return Comments::addComment($text, $this->settings);
+            }
+        }
     }
 
     public static function showComments($direction = false)
@@ -26,7 +33,6 @@ class Comments extends Components
             $COMPONENTS['comments']->current_comment = $comments[$i];
             echo Template::addTmp('comment', 'comments');
         }
-
         return trim(ob_get_clean());
     }
 
@@ -73,20 +79,10 @@ class Comments extends Components
         
         if ($cur_page) {
             $interval = Comments::issetComments($cur_page, $table, $cur_id, $direction);
-            if ($interval != -1) {
-                $from = $interval;
-            } else {
-                Main::pageNotFound();
-            }
+            ($interval != -1) ? $from = $interval : Main::pageNotFound();
         }
 
-        if ($direction) {
-            $by = 'ASC';
-        } else {
-            $by = 'DESC';
-        }
-
-        //echo 'SELECT * FROM ' . $table . ' WHERE article_id=' . $cur_id .' ORDER BY id ' . $by . ' LIMIT ' . $from . ',' . $limit;
+        $by = ($direction) ? 'ASC' : 'DESC';
 
         $result = $DB->query('SELECT * FROM ' . $table . ' WHERE article_id=' . $cur_id .' ORDER BY id ' . $by . ' LIMIT ' . $from . ',' . $limit);
         while ($data = $result->fetch_assoc()) {
@@ -96,6 +92,24 @@ class Comments extends Components
         return $comments;
     }
 
+    public static function addComment($text, $component_settings)
+    {
+        global $DB;
+
+        $table = $component_settings['SQLTABLES'][$component_settings['p_module']];
+        $cur_id = filter_input(INPUT_GET, 'id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
+        if (!$cur_id) {
+            return false;
+        }
+
+        $cur_user_name = $_SESSION['user_data']['id'];
+        if (!$cur_user_name) {
+            return false;
+        }
+
+        $result = $DB->query('INSERT INTO ' . $table . ' (article_id, user_id, text) VALUES ("' . $cur_id . '", "' . $cur_user_name . '", "' . $text . '")');
+    }
+    
     public static function getCommentField($field)
     {
         global $COMPONENTS;

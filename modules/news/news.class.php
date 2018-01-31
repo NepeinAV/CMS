@@ -17,6 +17,7 @@ class News extends Modules
     {
         global $MODULES;
 
+        //$from = self::issetArticles()
         $articles = self::getArticles($direction);
         if (!$articles) {
             return 'Нет новостей';

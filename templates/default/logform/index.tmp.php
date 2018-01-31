@@ -5,9 +5,10 @@
             <input type="password" name="password" placeholder="Пароль">
             <input type="submit" name="signin" value="Войти">
         </form>
+        <a href="/pages/registration/">Зарегистрироваться</a>
         <?else:?>
             Hello,
-            <?echo User::getCurrUserField('name');?> |
+            <?print(User::getCurrUserData('name'));?> |
                 <a href="/logout/">Выйти</a>
                 <?endif;?>
 </section>
