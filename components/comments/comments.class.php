@@ -16,28 +16,35 @@ class Comments extends Components
     {
         global $COMPONENTS;
 
-        $comments = Comments::getComments($COMPONENTS['comments']->settings['p_module']);
+        $comments = Comments::getComments($COMPONENTS['comments']->settings['p_module'], $direction);
         if (!$comments) {
             return "Нет комментариев";
         }
 
         ob_start();
         for ($i = 0; $i < count($comments); $i++) {
-            $COMPONENTS['comments']->current_comment = $comments[($direction) ? $i : count($comments) - 1 - $i];
+            $COMPONENTS['comments']->current_comment = $comments[$i];
             echo Template::addTmp('comment', 'comments');
         }
 
         return trim(ob_get_clean());
     }
 
-    private static function issetComments($page, $table, $id)
+    private static function issetComments($page, $table, $id, $direction)
     {
         global $DB, $COMPONENTS;
         
         $from = ($page - 1) * $COMPONENTS['comments']->settings['LIMIT'];
         $limit = $COMPONENTS['comments']->settings['LIMIT'];
 
-        $result = $DB->query('SELECT id FROM ' . $table . ' WHERE article_id=' . $id .' LIMIT ' . $from . ',' . $limit);
+        if ($direction) {
+            $by = 'ASC';
+        } else {
+            $by = 'DESC';
+        }
+
+        $result = $DB->query('SELECT id FROM ' . $table . ' WHERE article_id=' . $id .' ORDER BY id ' . $by . ' LIMIT ' . $from . ',' . $limit);
+        
         if ($result->num_rows) {
             return $from;
         }
@@ -45,7 +52,7 @@ class Comments extends Components
         return -1;
     }
 
-    private static function getComments($table = 'news')
+    private static function getComments($table = 'news', $direction)
     {
         global $DB, $COMPONENTS;
 
@@ -58,17 +65,30 @@ class Comments extends Components
         if (!$cur_id) {
             return false;
         }
+
+        $num_of_comments = $DB->query('SELECT id FROM newscomments WHERE article_id=' . $cur_id)->num_rows;
+        if (!$num_of_comments) {
+            return false;
+        }
         
         if ($cur_page) {
-            $interval = Comments::issetComments($cur_page, $table, $cur_id);
+            $interval = Comments::issetComments($cur_page, $table, $cur_id, $direction);
             if ($interval != -1) {
                 $from = $interval;
             } else {
                 Main::pageNotFound();
             }
         }
-        
-        $result = $DB->query('SELECT * FROM ' . $table . ' WHERE article_id=' . $cur_id . ' LIMIT ' . $from . ',' . $limit);
+
+        if ($direction) {
+            $by = 'ASC';
+        } else {
+            $by = 'DESC';
+        }
+
+        //echo 'SELECT * FROM ' . $table . ' WHERE article_id=' . $cur_id .' ORDER BY id ' . $by . ' LIMIT ' . $from . ',' . $limit;
+
+        $result = $DB->query('SELECT * FROM ' . $table . ' WHERE article_id=' . $cur_id .' ORDER BY id ' . $by . ' LIMIT ' . $from . ',' . $limit);
         while ($data = $result->fetch_assoc()) {
             $comments[] = $data;
         }

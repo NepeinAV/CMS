@@ -16,12 +16,15 @@
     <?echo Template::addTmp('header');?>
 
         <?echo Template::addTmp('menu');?>
-
-            <main class="wrap">
-                <?echo News::showArticles();?>
-                    <?echo Components::getComponent('pagenavigator', 'news');?>
-            </main>
-
+            <div class="flex_c wrap">
+                <main>
+                    <?echo News::showArticles(false);?>
+                        <?echo Components::getComponent('pagenavigator', 'news');?>
+                </main>
+                <aside>
+                    <?echo Modules::getModule('index', 'logform');?>
+                </aside>
+            </div>
 </body>
 
 </html>

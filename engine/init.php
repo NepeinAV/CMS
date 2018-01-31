@@ -20,5 +20,6 @@
     require_once('./engine/components.class.php');
     require_once('./engine/localization.class.php');
     require_once('./engine/tmp.class.php');
+    require_once('./engine/user.class.php');
     $MODULES = [];
     $COMPONENTS = [];

@@ -80,7 +80,7 @@ section.logo {
     margin-bottom: 30px;
 }
 
-main.wrap {
+.wrap {
     padding: 0 40px;
 }
 
@@ -89,11 +89,13 @@ article {
     padding: 0px 0 30px 0;
 }
 
-article:last-of-type {
+article:last-of-type,
+.comment:last-of-type {
     border: none;
 }
 
 .article__title {
+    margin-left: -2px;
     font: 800 30px Calibri;
     text-transform: uppercase;
 }
@@ -126,4 +128,31 @@ section.comment {
 
 .comments__title {
     font: 800 25px Calibri;
+}
+
+.flex_c {
+    display: flex;
+}
+
+aside {
+    width: 300px;
+    margin-top: 27px;
+}
+
+main {
+    width: 100%;
+    padding-right: 40px;
+}
+
+input[type=text],
+input[type=password] {
+    border: 1px solid #ddd;
+    padding: 10px 15px;
+    border-radius: 2px;
+    margin-bottom: 10px;
+}
+
+input[type=submit] {
+    padding: 10px 15px;
+    cursor: pointer;
 }

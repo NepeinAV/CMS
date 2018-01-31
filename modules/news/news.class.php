@@ -16,52 +16,71 @@ class News extends Modules
     public static function showArticles($direction = false)
     {
         global $MODULES;
-        $articles = self::getArticles();
+
+        $articles = self::getArticles($direction);
         if (!$articles) {
             return 'Нет новостей';
         }
+
         ob_start();
         for ($i = 0; $i < count($articles); ++$i) {
-            $MODULES['news']->current_article = $articles[($direction) ? $i : count($articles) - 1 - $i];
+            $MODULES['news']->current_article = $articles[$i];
             echo Template::addTmp('article', 'news');
         }
 
         return trim(ob_get_clean());
     }
 
-    private static function issetArticles($page)
+    private static function issetArticles($page, $direction)
     {
         global $DB, $MODULES;
 
         $from = ($page - 1) * $MODULES['news']->settings['LIMIT'];
         $limit = $MODULES['news']->settings['LIMIT'];
+        
+        if ($direction) {
+            $by = 'ASC';
+        } else {
+            $by = 'DESC';
+        }
 
-        $result = $DB->query('SELECT id FROM news LIMIT '.$from.','.$limit);
+        $result = $DB->query('SELECT id FROM news ORDER BY id ' . $by . ' LIMIT '.$from.','.$limit);
         if ($result->num_rows) {
             return $from;
         }
 
-        return false;
+        return -1;
     }
 
-    private static function getArticles()
+    private static function getArticles($direction)
     {
         global $DB, $MODULES;
 
+        $num_of_articles = $DB->query('SELECT id FROM news')->num_rows;
+        if (!$num_of_articles) {
+            return false;
+        }
+        
         $from = 0;
         $limit = $MODULES['news']->settings['LIMIT'];
 
         $cur_page = filter_input(INPUT_GET, 'page_id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
         if ($cur_page) {
-            $interval = self::issetArticles($cur_page);
-            if ($interval) {
+            $interval = self::issetArticles($cur_page, $direction);
+            if ($interval != -1) {
                 $from = $interval;
             } else {
                 Main::pageNotFound();
             }
         }
 
-        $result = $DB->query('SELECT * FROM news LIMIT '.$from.','.$limit);
+        if ($direction) {
+            $by = 'ASC';
+        } else {
+            $by = 'DESC';
+        }
+
+        $result = $DB->query('SELECT * FROM news ORDER BY id ' . $by . ' LIMIT '.$from.','.$limit);
         while ($data = $result->fetch_assoc()) {
             $articles[] = $data;
         }
@@ -89,22 +108,5 @@ class News extends Modules
         } else {
             return $MODULES['news']->current_article[$field];
         }
-    }
-
-    public static function getArticleFormattedDateTime($format = 'DD.MM.YY')
-    {
-        $datetime = self::getArticleField('date');
-        $date = explode('-', explode(' ', $datetime)[0]);
-        $time = explode(':', explode(' ', $datetime)[1]);
-
-        if (preg_match('/Y{2,4}/', $format, $matches)) {
-            $year = mb_strcut($date[0], -strlen($matches[0]));
-        }
-
-        return preg_replace(
-            ['/H{2}/', '/(MIN){2}/', '/S{2}/', '/D{2}/', '/M{2}/', '/Y{2,4}/'],
-            [$time[0], $time[1], $time[2], $date[2], $date[1], $year],
-            $format
-        );
     }
 }
