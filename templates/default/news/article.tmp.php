@@ -2,7 +2,7 @@
     <div class="article__image"></div>
     <header>
         <h1 class="article__title">
-            <a href="/news/<?print(News::getArticleID());?>/">
+            <a href="/news/<?print(News::getArticleField('id'));?>/">
                 <?print(News::getArticleField('title'));?>
             </a>
         </h1>

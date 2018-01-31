@@ -13,87 +13,57 @@ class News extends Modules
     // $direction:
     //     true - в порядке как в базе данных
     //     false - в обратном порядке
-    public static function showArticles($direction = false)
+    // $range - [От n строчки, Количество строк]
+    public static function showArticles($direction = false, ...$range)
     {
         global $MODULES;
 
-        //$from = self::issetArticles()
-        $articles = self::getArticles($direction);
-        if (!$articles) {
+        $cur_page = filter_input(INPUT_GET, 'page_id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
+        
+        $from = (!isset($range[0]) && $cur_page) ? ($cur_page - 1) * $MODULES['news']->settings['LIMIT'] : 0;
+        $limit = (!isset($range[1])) ? $MODULES['news']->settings['LIMIT'] : $range[1];
+        
+        if (self::issetArticles($direction, $from, $limit)) {
+            $articles = self::getArticles($direction, $from, $limit);
+
+            ob_start();
+            for ($i = 0; $i < count($articles); ++$i) {
+                $MODULES['news']->current_article = $articles[$i];
+                echo Template::addTmp('article', 'news');
+            }
+    
+            return trim(ob_get_clean());
+        } else {
             return 'Нет новостей';
         }
-
-        ob_start();
-        for ($i = 0; $i < count($articles); ++$i) {
-            $MODULES['news']->current_article = $articles[$i];
-            echo Template::addTmp('article', 'news');
-        }
-
-        return trim(ob_get_clean());
     }
 
-    private static function issetArticles($page, $direction)
+    private static function issetArticles($direction, $from, $limit)
     {
-        global $DB, $MODULES;
+        global $DB;
 
-        $from = ($page - 1) * $MODULES['news']->settings['LIMIT'];
-        $limit = $MODULES['news']->settings['LIMIT'];
-        
-        if ($direction) {
-            $by = 'ASC';
-        } else {
-            $by = 'DESC';
-        }
+        $by = ($direction) ? 'ASC' : 'DESC';
 
-        $result = $DB->query('SELECT id FROM news ORDER BY id ' . $by . ' LIMIT '.$from.','.$limit);
+        $result = $DB->query('SELECT id FROM news ORDER BY id ' . $by . ' LIMIT ' . $from . ',' . $limit);
         if ($result->num_rows) {
-            return $from;
+            return $result->num_rows;
         }
 
-        return -1;
+        return false;
     }
 
-    private static function getArticles($direction)
+    private static function getArticles($direction, $from, $limit)
     {
-        global $DB, $MODULES;
+        global $DB;
 
-        $num_of_articles = $DB->query('SELECT id FROM news')->num_rows;
-        if (!$num_of_articles) {
-            return false;
-        }
-        
-        $from = 0;
-        $limit = $MODULES['news']->settings['LIMIT'];
+        $by = ($direction) ? 'ASC' : 'DESC';
 
-        $cur_page = filter_input(INPUT_GET, 'page_id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
-        if ($cur_page) {
-            $interval = self::issetArticles($cur_page, $direction);
-            if ($interval != -1) {
-                $from = $interval;
-            } else {
-                Main::pageNotFound();
-            }
-        }
-
-        if ($direction) {
-            $by = 'ASC';
-        } else {
-            $by = 'DESC';
-        }
-
-        $result = $DB->query('SELECT * FROM news ORDER BY id ' . $by . ' LIMIT '.$from.','.$limit);
+        $result = $DB->query('SELECT * FROM news ORDER BY id ' . $by . ' LIMIT ' . $from . ',' . $limit);
         while ($data = $result->fetch_assoc()) {
             $articles[] = $data;
         }
 
         return $articles;
-    }
-
-    public static function getArticleID()
-    {
-        global $MODULES;
-
-        return !empty(filter_input(INPUT_GET, 'id')) ? filter_input(INPUT_GET, 'id') : $MODULES['news']->current_article['id'];
     }
 
     public static function getArticleField($field)
@@ -103,8 +73,7 @@ class News extends Modules
         $id = filter_input(INPUT_GET, 'id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
 
         if ($id) {
-            $result = $DB->query('SELECT '.$field.' FROM news WHERE id='.$id);
-
+            $result = $DB->query('SELECT '.$field.' FROM news WHERE id=' . $id);
             return (result != false) ? $result = $result->fetch_assoc()[$field] : false;
         } else {
             return $MODULES['news']->current_article[$field];
