@@ -2,89 +2,71 @@
 class Comments extends Components
 {
     public $settings;
+    public $params;
     public $current_comment;
 
-    public function __construct($p_module, $p_component)
+    public function __construct($params)
     {
         $this->settings = $this->readSettings('comments');
-        if ($p_module) {
-            $this->settings['p_module'] = $p_module;
+
+        foreach ($params as $key => $value) {
+            $this->params[$key] = $value;
         }
 
         if (isset($_POST['addcomment'])) {
             $text = filter_input(INPUT_POST, 'text', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
             if ($text) {
-                return Comments::addComment($text, $this->settings);
+                return Comments::addComment($text, $this->settings, $this->params);
             }
         }
     }
 
     public static function showComments($direction = false)
     {
-        global $COMPONENTS;
+        try {
+            global $COMPONENTS;
+        
+            $cur_page = filter_input(INPUT_GET, 'page_id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
+            $cur_id = filter_input(INPUT_GET, 'id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
+            $from = (!isset(end($COMPONENTS['comments'])->params['from']) && $cur_page) ? ($cur_page - 1) * end($COMPONENTS['comments'])->settings['LIMIT'] : ((isset(end($COMPONENTS['comments'])->params['from'])) ? end($COMPONENTS['comments'])->params['from'] : 0);
+            $limit = (!isset(end($COMPONENTS['comments'])->params['limit'])) ? end($COMPONENTS['comments'])->settings['LIMIT'] : end($COMPONENTS['comments'])->params['limit'];
+            $table = end($COMPONENTS['comments'])->settings['SQLTABLES'][end($COMPONENTS['comments'])->params['p_module']];
 
-        $comments = Comments::getComments($COMPONENTS['comments']->settings['p_module'], $direction);
-        if (!$comments) {
-            return "Нет комментариев";
-        }
+            $comments = self::getComments($direction, $from, $limit, $table, $cur_id);
+            if (!$comments) {
+                return "Нет комментариев";
+            }
 
-        ob_start();
-        for ($i = 0; $i < count($comments); $i++) {
-            $COMPONENTS['comments']->current_comment = $comments[$i];
-            echo Template::addTmp('comment', 'comments');
+            ob_start();
+            for ($i = 0; $i < count($comments); $i++) {
+                end($COMPONENTS['comments'])->current_comment = $comments[$i];
+                echo Template::addTmp('comment', 'comments');
+            }
+
+            return trim(ob_get_clean());
+        } catch (SQLException $e) {
+            return $e->getMessage();
         }
-        return trim(ob_get_clean());
     }
 
-    private static function issetComments($page, $table, $id, $direction)
+    private static function getComments($direction, $from, $limit, $table, $id)
     {
         global $DB, $COMPONENTS;
-        
-        $from = ($page - 1) * $COMPONENTS['comments']->settings['LIMIT'];
-        $limit = $COMPONENTS['comments']->settings['LIMIT'];
-
-        if ($direction) {
-            $by = 'ASC';
-        } else {
-            $by = 'DESC';
-        }
-
-        $result = $DB->query('SELECT id FROM ' . $table . ' WHERE article_id=' . $id .' ORDER BY id ' . $by . ' LIMIT ' . $from . ',' . $limit);
-        
-        if ($result->num_rows) {
-            return $from;
-        }
-
-        return -1;
-    }
-
-    private static function getComments($table = 'news', $direction)
-    {
-        global $DB, $COMPONENTS;
-
-        $table = $COMPONENTS['comments']->settings['SQLTABLES'][$table];
-        $from = 0;
-        $limit = $COMPONENTS['comments']->settings['LIMIT'];
-
-        $cur_page = filter_input(INPUT_GET, 'page_id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
-        $cur_id = filter_input(INPUT_GET, 'id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
-        if (!$cur_id) {
-            return false;
-        }
-
-        $num_of_comments = $DB->query('SELECT id FROM newscomments WHERE article_id=' . $cur_id)->num_rows;
-        if (!$num_of_comments) {
-            return false;
-        }
-        
-        if ($cur_page) {
-            $interval = Comments::issetComments($cur_page, $table, $cur_id, $direction);
-            ($interval != -1) ? $from = $interval : Main::pageNotFound();
-        }
 
         $by = ($direction) ? 'ASC' : 'DESC';
 
-        $result = $DB->query('SELECT * FROM ' . $table . ' WHERE article_id=' . $cur_id .' ORDER BY id ' . $by . ' LIMIT ' . $from . ',' . $limit);
+        $query = 'SELECT * FROM ' . $table;
+        if ($id && end($COMPONENTS['comments'])->params['for_id']) {
+            $query .= ' WHERE article_id=' . $id;
+        }
+        $query .= ' ORDER BY id ' . $by . ' LIMIT ' . $from . ',' . $limit;
+        
+        $result = $DB->query($query);
+
+        if (!$result->num_rows) {
+            throw new SQLException('Пустой ответ', SQLException::EMPTY_RESPONSE);
+        }
+        
         while ($data = $result->fetch_assoc()) {
             $comments[] = $data;
         }
@@ -92,27 +74,34 @@ class Comments extends Components
         return $comments;
     }
 
-    public static function addComment($text, $component_settings)
+    private static function addComment($text, $component_settings, $component_params)
     {
-        global $DB;
+        try {
+            global $DB;
 
-        $table = $component_settings['SQLTABLES'][$component_settings['p_module']];
-        $cur_id = filter_input(INPUT_GET, 'id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
-        if (!$cur_id) {
-            return false;
+            $table = $component_settings['SQLTABLES'][$component_params['p_module']];
+            $cur_id = filter_input(INPUT_GET, 'id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
+            $cur_user_name = $_SESSION['user_data']['id'];
+            
+            if (!$cur_id) {
+                throw new RequestException("Невозможно добавить коментарий", RequestException::GET_PARAM_NOT_EXISTS);
+            }
+
+            if (!$cur_user_name) {
+                throw new UserException("Для добавления комментария необходимо войти в аккаунт", UserException::NOT_SIGNED_IN);
+            }
+
+            $result = $DB->query('INSERT INTO ' . $table . ' (article_id, user_id, text) VALUES ("' . $cur_id . '", "' . $cur_user_name . '", "' . $text . '")');
+        } catch (RequestException $e) {
+            echo $e->getMessage();
+        } catch (UserException $e) {
+            echo $e->getMessage();
         }
-
-        $cur_user_name = $_SESSION['user_data']['id'];
-        if (!$cur_user_name) {
-            return false;
-        }
-
-        $result = $DB->query('INSERT INTO ' . $table . ' (article_id, user_id, text) VALUES ("' . $cur_id . '", "' . $cur_user_name . '", "' . $text . '")');
     }
     
     public static function getCommentField($field)
     {
         global $COMPONENTS;
-        return $COMPONENTS['comments']->current_comment[$field];
+        return end($COMPONENTS['comments'])->current_comment[$field];
     }
 }

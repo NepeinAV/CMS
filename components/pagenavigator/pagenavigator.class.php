@@ -3,15 +3,14 @@
 class PageNavigator extends Components
 {
     public $settings;
+    public $params;
 
-    public function __construct($p_module, $p_component = false)
+    public function __construct($params)
     {
         $this->settings = $this->readSettings('pagenavigator');
-        if ($p_module) {
-            $this->settings['p_module'] = $p_module;
-        }
-        if ($p_component) {
-            $this->settings['p_component'] = $p_component;
+
+        foreach ($params as $key => $value) {
+            $this->params[$key] = $value;
         }
     }
 
@@ -20,17 +19,17 @@ class PageNavigator extends Components
         global $DB, $MODULES, $COMPONENTS;
 
         {// Получаем зависимости и формируем название таблицы для получения данных
-            $p_module = $COMPONENTS['pagenavigator']->settings['p_module'];
+            $p_module = end($COMPONENTS['pagenavigator'])->params['p_module'];
             $table = $p_module;
 
-            if (isset($COMPONENTS['pagenavigator']->settings['p_component'])) {
-                $p_component = $COMPONENTS['pagenavigator']->settings['p_component'];
-                $table .= '_'.$p_component;
+            if (isset(end($COMPONENTS['pagenavigator'])->params['p_component'])) {
+                $p_component = end($COMPONENTS['pagenavigator'])->params['p_component'];
+                $table .= '_' . $p_component;
             }
         }
 
         {
-            $table = $COMPONENTS['pagenavigator']->settings['SQLTABLES'][$table];
+            $table = end($COMPONENTS['pagenavigator'])->settings['SQLTABLES'][$table];
             $cur_id = filter_input(INPUT_GET, 'id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
             $cur_page = filter_input(INPUT_GET, 'page_id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
             if (!$cur_page) {
@@ -41,12 +40,13 @@ class PageNavigator extends Components
         $query = self::getPageNavPanelQuery($p_component, $table, $cur_id);
         $records = $DB->query($query)->num_rows;
 
-        $limit = $MODULES[$p_module]->settings['LIMIT'];
-        if (isset($COMPONENTS[$p_component]) && $cur_id) {
-            $limit = $COMPONENTS[$p_component]->settings['LIMIT'];
+        $limit = end($MODULES[$p_module])->settings['LIMIT'];
+        
+        if (isset(end($COMPONENTS[$p_component])->settings['LIMIT']) && $cur_id) {
+            $limit = end($COMPONENTS[$p_component])->settings['LIMIT'];
         }
 
-        if ($records < $limit) { // Не возвращаем панель навигации если кол-во всех записей меньше максимального
+        if ($records <= $limit) { // Не возвращаем панель навигации если кол-во всех записей меньше максимального
             return false;
         }
 
@@ -55,8 +55,8 @@ class PageNavigator extends Components
         { // Проверяем необходимость вывода элементов и возвращаем их
             switch ($cur_page) {
                 case 1:
-                    $right = true;
                     $left = false;
+                    $right = true;
                     break;
                 case $pages_num:
                     $left = true;
@@ -88,9 +88,9 @@ class PageNavigator extends Components
 
     private static function getPageNavPanelQuery($p_component, $table, $cur_id)
     {
-        $query = 'SELECT id FROM '.$table;
+        $query = 'SELECT id FROM ' . $table;
         if ($p_component) {
-            $query .= ' WHERE article_id='.$cur_id;
+            $query .= ' WHERE article_id=' . $cur_id;
         }
 
         return $query;

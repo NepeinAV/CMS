@@ -1,7 +1,7 @@
 <?php
 class Components
 {
-    public static function getComponent($component, $p_module, $p_component)
+    public static function getComponent($action = 'index', $component, $params)
     {
         global $COMPONENTS;
 
@@ -9,11 +9,10 @@ class Components
         
         if (file_exists('./components/' . $component . '/' . $component . '.class.php')) {
             require_once('./components/' . $component . '/' . $component . '.class.php');
-            if (!isset($COMPONENTS[$component])) {
-                $COMPONENTS[$component] = new $component($p_module, $p_component);
-            }
+            $COMPONENTS[$component][] = new $component($params);
             ob_start();
-            echo Template::addTmp('index', $component);
+            echo Template::addTmp($action, $component);
+            array_pop($COMPONENTS[$component]);
             return trim(ob_get_clean());
         } else {
             return "Компонент не найден";

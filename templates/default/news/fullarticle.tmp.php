@@ -20,7 +20,10 @@
             <div class="flex_c wrap">
                 <main>
                     <?echo Template::addTmp('article', 'news');?>
-                        <?echo Components::getComponent('comments', 'news');?>
+                        <?echo Components::getComponent('index', 'comments', ['p_module' => 'news', 'for_id' => true]);?>
+                            <?echo Components::getComponent('index', 'pagenavigator', ['p_module' => 'news', 'p_component' => 'comments'])?>
+                                <?echo Components::getComponent('addform', 'comments');?>
+
                 </main>
                 <?print(Template::addTmp('aside', 'news'));?>
             </div>

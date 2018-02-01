@@ -16,6 +16,7 @@
     require_once('./engine/dbconnect.class.php');
     require_once('./engine/rdset.class.php');
     require_once('./engine/main.class.php');
+    // require_once('./engine/baseexception.class.php');
     require_once('./engine/localization.class.php');
     require_once('./engine/modules.class.php');
     require_once('./engine/components.class.php');

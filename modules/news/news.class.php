@@ -3,13 +3,14 @@
 class News extends Modules
 {
     public $settings;
+    public $params;
     public $current_article = undefined;
 
     public function __construct($params)
     {
         $this->settings = $this->readSettings('news');
         foreach ($params as $key => $value) {
-            $this->settings[$key] = $value;
+            $this->params[$key] = $value;
         }
     }
 
@@ -17,14 +18,14 @@ class News extends Modules
     //     true - в порядке как в базе данных
     //     false - в обратном порядке
     // $range - [От n строчки, Количество строк]
-    public static function showArticles($direction = false, $from, $limit)
+    public static function showArticles($direction = false)
     {
         global $MODULES;
 
         $cur_page = filter_input(INPUT_GET, 'page_id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
-        $from = (!isset(end($MODULES['news'])->settings['from']) && $cur_page && empty($from)) ? ($cur_page - 1) * end($MODULES['news'])->settings['LIMIT'] : 0;
-        $limit = (!isset(end($MODULES['news'])->settings['limit']) && empty($limit)) ? end($MODULES['news'])->settings['LIMIT'] : end($MODULES['news'])->settings['limit'];
-        
+        $from = (!isset(end($MODULES['news'])->params['from']) && $cur_page) ? ($cur_page - 1) * end($MODULES['news'])->settings['LIMIT'] : ((isset(end($MODULES['news'])->params['from'])) ? end($MODULES['news'])->params['from'] : 0);
+        $limit = (!isset(end($MODULES['news'])->params['limit'])) ? end($MODULES['news'])->settings['LIMIT'] : end($MODULES['news'])->params['limit'];
+
         $articles = self::getArticles($direction, $from, $limit);
         if (!$articles) {
             return 'Нет новостей';
@@ -35,7 +36,7 @@ class News extends Modules
             end($MODULES['news'])->current_article = $articles[$i];
             echo Template::addTmp('article', 'news');
         }
-    
+
         return trim(ob_get_clean());
     }
 
@@ -64,7 +65,7 @@ class News extends Modules
 
         $cur_id = filter_input(INPUT_GET, 'id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
 
-        if ($cur_id && empty(end($MODULES['news'])->settings['from']) && empty(end($MODULES['news'])->settings['limit'])) {
+        if ($cur_id && empty(end($MODULES['news'])->params['from']) && empty(end($MODULES['news'])->params['limit'])) {
             $result = $DB->query('SELECT ' . $field . ' FROM news WHERE id=' . $cur_id);
             return (result != false) ? $result = $result->fetch_assoc()[$field] : false;
         } else {

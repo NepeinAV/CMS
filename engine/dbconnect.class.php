@@ -14,12 +14,15 @@
             if (!$mysqli->connect_error) {
                 $this->connection = $mysqli;
             } else {
-                die('Ошибка подключения к базе данных. ' . $mysqli->connect_error);
+                throw new SQLException('Ошибка подключения к базе данных.', SQLException::CONNECT_ERROR);
             }
         }
         public function query($query)
         {
             $result = $this->connection->query($query);
+            if ($result === false) {
+                throw new SQLException("Ошибка в запросе", SQLException::WRONG_QUERY);
+            }
             return $result;
         }
     }

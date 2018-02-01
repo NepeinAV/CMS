@@ -3,25 +3,39 @@ class Modules
 {
     public static function getModule($action = 'index', $module = __MODULE, $params)
     {
-        global $MODULES;
-        $action = strtolower($action);
-        $module = strtolower($module);
-        if (file_exists('./templates/' . __TEMPLATE  . '/' . $module . '/' . $action . '.tmp.php')) {
-            require_once('./modules/' . $module . '/' . $module . '.class.php');
-            $MODULES[$module][] = new $module($params);
-            ob_start();
-            include('./templates/' . __TEMPLATE  . '/' . $module . '/' . $action . '.tmp.php');
-            // print_r(end($MODULES[$module]));
-            array_pop($MODULES[$module]);
-            return trim(ob_get_clean());
-        } else {
-            Main::pageNotFound();
+        try {
+            global $MODULES;
+
+            $action = strtolower($action);
+            $module = strtolower($module);
+            $tmp = './templates/' . __TEMPLATE  . '/' . $module . '/' . $action . '.tmp.php';
+            $class = './modules/' . $module . '/' . $module . '.class.php';
+
+            if (file_exists($tmp) && file_exists($class)) {
+                require_once($class);
+                $MODULES[$module][] = new $module($params); // Кладём экземпляр модуля в стек
+                ob_start();
+                echo Template::addTmp($action, $module);
+                array_pop($MODULES[$module]);
+                return trim(ob_get_clean());
+            } else {
+                throw new FileException("Файлы модуля не найдены", FileException::NOT_EXISTS);
+            }
+        } catch (FileException $e) {
+            echo $e->getMessage();
         }
     }
 
     protected function readSettings($module)
     {
-        return json_decode(file_get_contents('./modules/' . $module . '/settings.json'), true);
+        try {
+            if (!file_exists('./modules/' . $module . '/settings.json')) {
+                throw new FileException("Настройки модуля $module не найдены", FileException::NOT_EXISTS);
+            }
+            return json_decode(file_get_contents('./modules/' . $module . '/settings.json'), true);
+        } catch (FileException $e) {
+            echo $e->getMessage();
+        }
     }
 
     public static function getModuleTitle()

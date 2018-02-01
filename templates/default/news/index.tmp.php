@@ -19,7 +19,7 @@
             <div class="flex_c wrap">
                 <main>
                     <?echo News::showArticles(false);?>
-                        <?echo Components::getComponent('pagenavigator', 'news');?>
+                        <?echo Components::getComponent('index', 'pagenavigator', ['p_module' => 'news']);?>
                 </main>
                 <?print(Template::addTmp('aside', 'news'));?>
             </div>
