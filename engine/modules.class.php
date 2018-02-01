@@ -13,6 +13,7 @@ class Modules
             }
             ob_start();
             include('./templates/' . __TEMPLATE  . '/' . $module . '/' . $type . '.tmp.php');
+            //unset($MODULES[$module][$MODULES[$module]]);
             return trim(ob_get_clean());
         } else {
             Main::pageNotFound();

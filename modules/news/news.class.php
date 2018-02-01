@@ -23,33 +23,18 @@ class News extends Modules
         $from = (!isset($range[0]) && $cur_page) ? ($cur_page - 1) * $MODULES['news']->settings['LIMIT'] : 0;
         $limit = (!isset($range[1])) ? $MODULES['news']->settings['LIMIT'] : $range[1];
         
-        if (self::issetArticles($direction, $from, $limit)) {
-            $articles = self::getArticles($direction, $from, $limit);
-
-            ob_start();
-            for ($i = 0; $i < count($articles); ++$i) {
-                $MODULES['news']->current_article = $articles[$i];
-                echo Template::addTmp('article', 'news');
-            }
-    
-            return trim(ob_get_clean());
-        } else {
+        $articles = self::getArticles($direction, $from, $limit);
+        if (!$articles) {
             return 'Нет новостей';
         }
-    }
 
-    private static function issetArticles($direction, $from, $limit)
-    {
-        global $DB;
-
-        $by = ($direction) ? 'ASC' : 'DESC';
-
-        $result = $DB->query('SELECT id FROM news ORDER BY id ' . $by . ' LIMIT ' . $from . ',' . $limit);
-        if ($result->num_rows) {
-            return $result->num_rows;
+        ob_start();
+        for ($i = 0; $i < count($articles); ++$i) {
+            $MODULES['news']->current_article = $articles[$i];
+            echo Template::addTmp('article', 'news');
         }
-
-        return false;
+    
+        return trim(ob_get_clean());
     }
 
     private static function getArticles($direction, $from, $limit)
@@ -59,6 +44,11 @@ class News extends Modules
         $by = ($direction) ? 'ASC' : 'DESC';
 
         $result = $DB->query('SELECT * FROM news ORDER BY id ' . $by . ' LIMIT ' . $from . ',' . $limit);
+
+        if (!$result->num_rows) {
+            return false;
+        }
+
         while ($data = $result->fetch_assoc()) {
             $articles[] = $data;
         }

@@ -5,7 +5,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>
-        <?echo Modules::getModuleTitle();?>
+        <?echo Modules::getModuleTitle();?> -
+            <?print(News::getArticleField('title'));?>
     </title>
     <link rel="stylesheet" href="/templates/default/news/css/style.css" />
     <script src="/templates/default/news/js/script.js"></script>
