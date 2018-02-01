@@ -22,9 +22,7 @@
                     <?echo Template::addTmp('article', 'news');?>
                         <?echo Components::getComponent('comments', 'news');?>
                 </main>
-                <aside>
-                    <?echo Modules::getModule('index', 'logform');?>
-                </aside>
+                <?print(Template::addTmp('aside', 'news'));?>
             </div>
 </body>
 

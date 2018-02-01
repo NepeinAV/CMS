@@ -1,19 +1,18 @@
 <?php
 class Modules
 {
-    public static function getModule($type = 'index', $module = __MODULE)
+    public static function getModule($action = 'index', $module = __MODULE, $params)
     {
         global $MODULES;
-        $type = strtolower($type);
+        $action = strtolower($action);
         $module = strtolower($module);
-        if (file_exists('./templates/' . __TEMPLATE  . '/' . $module . '/' . $type . '.tmp.php')) {
+        if (file_exists('./templates/' . __TEMPLATE  . '/' . $module . '/' . $action . '.tmp.php')) {
             require_once('./modules/' . $module . '/' . $module . '.class.php');
-            if (!isset($MODULES[$module])) {
-                $MODULES[$module] = new $module();
-            }
+            $MODULES[$module][] = new $module($params);
             ob_start();
-            include('./templates/' . __TEMPLATE  . '/' . $module . '/' . $type . '.tmp.php');
-            //unset($MODULES[$module][$MODULES[$module]]);
+            include('./templates/' . __TEMPLATE  . '/' . $module . '/' . $action . '.tmp.php');
+            // print_r(end($MODULES[$module]));
+            array_pop($MODULES[$module]);
             return trim(ob_get_clean());
         } else {
             Main::pageNotFound();
@@ -31,7 +30,7 @@ class Modules
         if (Localization::getPhrase('MODULE_TITLE')) {
             return Localization::getPhrase('MODULE_TITLE');
         } else {
-            return $MODULES[__MODULE]->settings['MODULE_TITLE'];
+            return end($MODULES[__MODULE])->settings['MODULE_TITLE'];
         }
     }
 }

@@ -21,9 +21,7 @@
                     <?echo News::showArticles(false);?>
                         <?echo Components::getComponent('pagenavigator', 'news');?>
                 </main>
-                <aside>
-                    <?echo Modules::getModule('index', 'logform');?>
-                </aside>
+                <?print(Template::addTmp('aside', 'news'));?>
             </div>
 </body>
 
