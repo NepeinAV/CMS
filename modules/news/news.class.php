@@ -2,13 +2,11 @@
 
 class News extends Modules
 {
-    public $settings;
     public $params;
     public $current_article = undefined;
 
     public function __construct($params)
     {
-        $this->settings = $this->readSettings('news');
         foreach ($params as $key => $value) {
             $this->params[$key] = $value;
         }
@@ -23,8 +21,8 @@ class News extends Modules
         global $MODULES;
 
         $cur_page = filter_input(INPUT_GET, 'page_id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
-        $from = (!isset(end($MODULES['news'])->params['from']) && $cur_page) ? ($cur_page - 1) * end($MODULES['news'])->settings['LIMIT'] : ((isset(end($MODULES['news'])->params['from'])) ? end($MODULES['news'])->params['from'] : 0);
-        $limit = (!isset(end($MODULES['news'])->params['limit'])) ? end($MODULES['news'])->settings['LIMIT'] : end($MODULES['news'])->params['limit'];
+        $from = (!self::getParam('news', 'from') && $cur_page) ? ($cur_page - 1) * self::getSetting('news', 'LIMIT') : ((self::getParam('news', 'from')) ? self::getParam('news', 'from') : 0);
+        $limit = (!self::getParam('news', 'limit')) ? self::getSetting('news', 'LIMIT') : self::getParam('news', 'from');
 
         $articles = self::getArticles($direction, $from, $limit);
         if (!$articles) {
@@ -65,11 +63,13 @@ class News extends Modules
 
         $cur_id = filter_input(INPUT_GET, 'id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
 
-        if ($cur_id && empty(end($MODULES['news'])->params['from']) && empty(end($MODULES['news'])->params['limit'])) {
+        if ($cur_id && !self::getParam('news', 'from') && !self::getParam('news', 'limit')) {
             $result = $DB->query('SELECT ' . $field . ' FROM news WHERE id=' . $cur_id);
-            return (result != false) ? $result = $result->fetch_assoc()[$field] : false;
+            $field = filter_var($result = $result->fetch_assoc()[$field], FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
+            return (result != false) ? $field : false;
         } else {
-            return end($MODULES['news'])->current_article[$field];
+            $field = filter_var(end($MODULES['news'])->current_article[$field], FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
+            return $field;
         }
     }
 }

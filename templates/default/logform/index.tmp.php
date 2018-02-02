@@ -11,4 +11,5 @@
             <?print(User::getCurrUserData('name'));?> |
                 <a href="/logout/">Выйти</a>
                 <?endif;?>
+                    <?echo $error;?>
 </section>

@@ -26,7 +26,7 @@ class Modules
         }
     }
 
-    protected function readSettings($module)
+    public static function readSettings($module)
     {
         try {
             if (!file_exists('./modules/' . $module . '/settings.json')) {
@@ -44,7 +44,27 @@ class Modules
         if (Localization::getPhrase('MODULE_TITLE')) {
             return Localization::getPhrase('MODULE_TITLE');
         } else {
-            return end($MODULES[__MODULE])->settings['MODULE_TITLE'];
+            return self::getSetting('news', 'MODULE_TITLE');
+        }
+    }
+
+    public static function getParam($component, $param)
+    {
+        global $MODULES;
+        if (isset(end($MODULES[$component])->params[$param])) {
+            return end($MODULES[$component])->params[$param];
+        } else {
+            return false;
+        }
+    }
+
+    public static function getSetting($module, $value)
+    {
+        global $SETTINGS;
+        if (isset($SETTINGS['modules'][$module][$value])) {
+            return $SETTINGS['modules'][$module][$value];
+        } else {
+            return false;
         }
     }
 }

@@ -16,11 +16,23 @@
     require_once('./engine/dbconnect.class.php');
     require_once('./engine/rdset.class.php');
     require_once('./engine/main.class.php');
-    // require_once('./engine/baseexception.class.php');
     require_once('./engine/localization.class.php');
     require_once('./engine/modules.class.php');
     require_once('./engine/components.class.php');
     require_once('./engine/tmp.class.php');
     require_once('./engine/user.class.php');
+    require_once('./engine/inputdata.class.php');
+
     $MODULES = [];
     $COMPONENTS = [];
+    $SETTINGS = [
+        "modules" => [
+            "news", "logform"
+        ],
+        "components" => [
+            "postingform", "pagenavigator", "comments"
+        ]
+    ];
+
+    Main::readSettings();
+    InputData::check();

@@ -1,23 +1,13 @@
 <?php
 class Comments extends Components
 {
-    public $settings;
     public $params;
     public $current_comment;
 
     public function __construct($params)
     {
-        $this->settings = $this->readSettings('comments');
-
         foreach ($params as $key => $value) {
             $this->params[$key] = $value;
-        }
-
-        if (isset($_POST['addcomment'])) {
-            $text = filter_input(INPUT_POST, 'text', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
-            if ($text) {
-                return Comments::addComment($text, $this->settings, $this->params);
-            }
         }
     }
 
@@ -28,9 +18,9 @@ class Comments extends Components
         
             $cur_page = filter_input(INPUT_GET, 'page_id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
             $cur_id = filter_input(INPUT_GET, 'id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
-            $from = (!isset(end($COMPONENTS['comments'])->params['from']) && $cur_page) ? ($cur_page - 1) * end($COMPONENTS['comments'])->settings['LIMIT'] : ((isset(end($COMPONENTS['comments'])->params['from'])) ? end($COMPONENTS['comments'])->params['from'] : 0);
-            $limit = (!isset(end($COMPONENTS['comments'])->params['limit'])) ? end($COMPONENTS['comments'])->settings['LIMIT'] : end($COMPONENTS['comments'])->params['limit'];
-            $table = end($COMPONENTS['comments'])->settings['SQLTABLES'][end($COMPONENTS['comments'])->params['p_module']];
+            $from = (!self::getParam('comments', 'from') && $cur_page) ? ($cur_page - 1) * self::getSetting('comments', 'LIMIT') : ((self::getParam('comments', 'from')) ? self::getParam('comments', 'from') : 0);
+            $limit = (!self::getParam('comments', 'limit')) ? self::getSetting('comments', 'LIMIT') : self::getParam('comments', 'from');
+            $table = self::getSetting('comments', 'SQLTABLES')[self::getParam('comments', 'p_module')];
 
             $comments = self::getComments($direction, $from, $limit, $table, $cur_id);
             if (!$comments) {
@@ -56,7 +46,7 @@ class Comments extends Components
         $by = ($direction) ? 'ASC' : 'DESC';
 
         $query = 'SELECT * FROM ' . $table;
-        if ($id && end($COMPONENTS['comments'])->params['for_id']) {
+        if ($id && self::getParam('comments', 'for_id')) {
             $query .= ' WHERE article_id=' . $id;
         }
         $query .= ' ORDER BY id ' . $by . ' LIMIT ' . $from . ',' . $limit;
@@ -64,7 +54,7 @@ class Comments extends Components
         $result = $DB->query($query);
 
         if (!$result->num_rows) {
-            throw new SQLException('Пустой ответ', SQLException::EMPTY_RESPONSE);
+            throw new SQLException('Нет комментариев', SQLException::EMPTY_RESPONSE);
         }
         
         while ($data = $result->fetch_assoc()) {
@@ -74,7 +64,7 @@ class Comments extends Components
         return $comments;
     }
 
-    private static function addComment($text, $component_settings, $component_params)
+    public static function addComment($text, $component_settings, $component_params)
     {
         try {
             global $DB;
@@ -102,6 +92,7 @@ class Comments extends Components
     public static function getCommentField($field)
     {
         global $COMPONENTS;
-        return end($COMPONENTS['comments'])->current_comment[$field];
+        $field = filter_var(end($COMPONENTS['comments'])->current_comment[$field], FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
+        return $field;
     }
 }

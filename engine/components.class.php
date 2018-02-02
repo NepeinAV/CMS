@@ -19,8 +19,35 @@ class Components
         }
     }
 
-    protected function readSettings($component)
+    public static function readSettings($component)
     {
-        return json_decode(file_get_contents('./components/' . $component . '/settings.json'), true);
+        try {
+            if (!file_exists('./components/' . $component . '/settings.json')) {
+                throw new FileException("Настройки компонента $component не найдены", FileException::NOT_EXISTS);
+            }
+            return json_decode(file_get_contents('./components/' . $component . '/settings.json'), true);
+        } catch (FileException $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    public static function getParam($component, $param)
+    {
+        global $COMPONENTS;
+        if (isset(end($COMPONENTS[$component])->params[$param])) {
+            return end($COMPONENTS[$component])->params[$param];
+        } else {
+            return false;
+        }
+    }
+
+    public static function getSetting($component, $value)
+    {
+        global $SETTINGS;
+        if (isset($SETTINGS['components'][$component][$value])) {
+            return $SETTINGS['components'][$component][$value];
+        } else {
+            return false;
+        }
     }
 }

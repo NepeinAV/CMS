@@ -22,8 +22,7 @@
                     <?echo Template::addTmp('article', 'news');?>
                         <?echo Components::getComponent('index', 'comments', ['p_module' => 'news', 'for_id' => true]);?>
                             <?echo Components::getComponent('index', 'pagenavigator', ['p_module' => 'news', 'p_component' => 'comments'])?>
-                                <?echo Components::getComponent('addform', 'comments');?>
-
+                                <?echo Components::getComponent('index', 'postingform', ['p_module' => 'news']);?>
                 </main>
                 <?print(Template::addTmp('aside', 'news'));?>
             </div>

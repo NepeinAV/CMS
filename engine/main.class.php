@@ -26,6 +26,46 @@
                 $format
             );
         }
-    }
 
-    $MAIN = new Main;
+        public static function getClassInstance($class_path, $class_name)
+        {
+            try {
+                if (!file_exists($class_path)) {
+                    throw new FileException("Класс не существует", FileException::NOT_EXISTS);
+                }
+                require_once($class_path);
+                $Class = new $class_name;
+                return $Class;
+            } catch (FileException $e) {
+                echo $e->getMessage();
+            }
+        }
+
+        public static function includeClass($type, $name)
+        {
+            try {
+                $class = "./$type/$name/$name.class.php";
+
+                if (!file_exists($class)) {
+                    throw new FileException("Класс $name не существует", FileException::NOT_EXISTS);
+                }
+                return require_once($class);
+            } catch (FileException $e) {
+                echo $e->getMessage();
+            }
+        }
+
+        public static function readSettings()
+        {
+            global $SETTINGS;
+            for ($i = 0; $i < count($SETTINGS['modules']); $i++) {
+                $module = array_shift($SETTINGS['modules']);
+                $SETTINGS['modules'][$module] = Modules::readSettings($module);
+            }
+
+            for ($i = 0; $i < count($SETTINGS['components']); $i++) {
+                $component = array_shift($SETTINGS['components']);
+                $SETTINGS['components'][$component] = Components::readSettings($component);
+            }
+        }
+    }

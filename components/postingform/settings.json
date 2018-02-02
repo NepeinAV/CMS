@@ -1,0 +1,6 @@
+{
+    "COMPONENT_NAME": "postingform",
+    "SQLTABLES": {
+        "news": "newscomments"
+    }
+}
