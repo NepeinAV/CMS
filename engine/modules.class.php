@@ -8,10 +8,9 @@ class Modules
 
             $action = strtolower($action);
             $module = strtolower($module);
-            $tmp = './templates/' . __TEMPLATE  . '/' . $module . '/' . $action . '.tmp.php';
             $class = './modules/' . $module . '/' . $module . '.class.php';
 
-            if (file_exists($tmp) && file_exists($class)) {
+            if (file_exists($class)) {
                 require_once($class);
                 $MODULES[$module][] = new $module($params); // Кладём экземпляр модуля в стек
                 ob_start();
@@ -19,7 +18,7 @@ class Modules
                 array_pop($MODULES[$module]);
                 return trim(ob_get_clean());
             } else {
-                throw new FileException("Файлы модуля не найдены", FileException::NOT_EXISTS);
+                throw new FileException("Module files not found!", FileException::NOT_EXISTS);
             }
         } catch (FileException $e) {
             echo $e->getMessage();

@@ -7,9 +7,6 @@
         </form>
         <a href="/pages/registration/">Зарегистрироваться</a>
         <?else:?>
-            Hello,
-            <?print(User::getCurrUserData('name'));?> |
-                <a href="/logout/">Выйти</a>
+            <?Template::addTmp('profile', 'logform');?>
                 <?endif;?>
-                    <?echo $error;?>
 </section>

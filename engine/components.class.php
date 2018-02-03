@@ -3,19 +3,24 @@ class Components
 {
     public static function getComponent($action = 'index', $component, $params)
     {
-        global $COMPONENTS;
+        try {
+            global $COMPONENTS;
 
-        $component = strtolower($component);
-        
-        if (file_exists('./components/' . $component . '/' . $component . '.class.php')) {
-            require_once('./components/' . $component . '/' . $component . '.class.php');
-            $COMPONENTS[$component][] = new $component($params);
-            ob_start();
-            echo Template::addTmp($action, $component);
-            array_pop($COMPONENTS[$component]);
-            return trim(ob_get_clean());
-        } else {
-            return "Компонент не найден";
+            $component = strtolower($component);
+            $class = './components/' . $component . '/' . $component . '.class.php';
+
+            if (file_exists($class)) {
+                require_once($class);
+                $COMPONENTS[$component][] = new $component($params);
+                ob_start();
+                echo Template::addTmp($action, $component);
+                array_pop($COMPONENTS[$component]);
+                return trim(ob_get_clean());
+            } else {
+                throw new FileException("Component files not found!", FileException::NOT_EXISTS);
+            }
+        } catch (FileException $e) {
+            echo $e->getMessage();
         }
     }
 

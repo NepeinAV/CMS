@@ -13,6 +13,26 @@ class InputData
                     throw new PostingFormException("Напишите что-нибудь", PostingFormException::EMPTY_FIELD);
                 }
             }
+
+            if (self::issetVal($_POST, 'signin')) {
+                Main::includeEngineClass('user');
+                $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
+                $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
+                User::signIn($name, $password);
+            }
+            
+            if (self::issetVal($_POST, 'reg_user')) {
+                Main::includeEngineClass('user');
+                $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
+                $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
+                $passwordr = filter_input(INPUT_POST, 'passwordr', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
+                User::regUser($name, $password, $passwordr);
+            }
+    
+            if (self::getVal($_GET, 'logout')) {
+                Main::includeEngineClass('user');
+                User::logOutUser();
+            }
         } catch (PostingFormException $e) {
             echo $e->getMessage();
         }

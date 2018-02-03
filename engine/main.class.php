@@ -47,7 +47,21 @@
                 $class = "./$type/$name/$name.class.php";
 
                 if (!file_exists($class)) {
-                    throw new FileException("Класс $name не существует", FileException::NOT_EXISTS);
+                    throw new FileException("Class '$name' not found", FileException::NOT_EXISTS);
+                }
+                return require_once($class);
+            } catch (FileException $e) {
+                echo $e->getMessage();
+            }
+        }
+
+        public static function includeEngineClass($name)
+        {
+            try {
+                $class = "./engine/$name.class.php";
+
+                if (!file_exists($class)) {
+                    throw new FileException("Class '$name' not found", FileException::NOT_EXISTS);
                 }
                 return require_once($class);
             } catch (FileException $e) {

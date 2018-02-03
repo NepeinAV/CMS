@@ -3,22 +3,6 @@ class User
 {
     public function __construct()
     {
-        if (isset($_POST['signin'])) {
-            $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
-            $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
-            return User::signIn($name, $password);
-        }
-        
-        if (isset($_POST['reg_user'])) {
-            $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
-            $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
-            $passwordr = filter_input(INPUT_POST, 'passwordr', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
-            return User::regUser($name, $password, $passwordr);
-        }
-
-        if (isset($_GET['logout']) && $_GET['logout'] == true) {
-            User::logOutUser();
-        }
     }
 
     public static function regUser($name, $password, $passwordr)
@@ -44,7 +28,7 @@ class User
         global $DB;
         if ($name && $password) {
             $password = md5(md5($password));
-            $result = $DB->query('SELECT id, name, type FROM users WHERE name="' . $name . '" AND password="' . $password . '"');
+            $result = $DB->query('SELECT id, name, type, avatar_url FROM users WHERE name="' . $name . '" AND password="' . $password . '"');
             if ($result->num_rows) {
                 $_SESSION['user_data'] = $result->fetch_assoc();
             }

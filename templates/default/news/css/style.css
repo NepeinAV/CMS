@@ -183,3 +183,10 @@ section.commentform {
 .reguserform input {
     display: block;
 }
+
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 100%;
+    background: url(/img/avatar_url.png);
+}
