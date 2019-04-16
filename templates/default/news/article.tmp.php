@@ -2,9 +2,13 @@
     <div class="article__image"></div>
     <header>
         <h1 class="article__title">
-            <a href="/news/<?print(News::getArticleField('id'));?>/">
+            <?php if (__ACTION === 'fullarticle'):?>
                 <?print(News::getArticleField('title'));?>
-            </a>
+            <?else:?>
+                <a href="/news/<?print(News::getArticleField('id'));?>/">
+                    <?print(News::getArticleField('title'));?>
+                </a>
+            <?endif;?>
         </h1>
     </header>
     <main class="article__text">

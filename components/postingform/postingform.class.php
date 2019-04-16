@@ -2,6 +2,7 @@
 class PostingForm extends Components
 {
     public $params;
+    public static $error;
 
     public function __construct($params)
     {
@@ -10,7 +11,7 @@ class PostingForm extends Components
         }
     }
 
-    public static function addComment($text, $component_params)
+    public static function addComment($text, $component_settings, $component_params)
     {
         try {
             global $DB;
@@ -28,10 +29,11 @@ class PostingForm extends Components
             }
 
             $result = $DB->query('INSERT INTO ' . $table . ' (article_id, user_id, text) VALUES ("' . $cur_id . '", "' . $cur_user_name . '", "' . $text . '")');
+            header("Refresh: 0");
         } catch (RequestException $e) {
-            echo $e->getMessage();
+            PostingForm::$error = $e->getMessage();
         } catch (UserException $e) {
-            echo $e->getMessage();
+            PostingForm::$error = $e->getMessage();
         }
     }
 }

@@ -58,6 +58,7 @@ class User
         if (isset($_SESSION['user_data'])) {
             return true;
         }
+        
         return false;
     }
 

@@ -1,8 +1,3 @@
-@font-face {
-    font-family: Logo;
-    src: url('../fonts/logo.otf') format('opentype');
-}
-
 :root {
     --main-color: #33cdc7;
     --link-color: #4a0971;
@@ -16,7 +11,7 @@
 
 body {
     background: white;
-    font: 100 15px Calibri;
+    font: 400 15px 'Open Sans';
     margin: 0;
 }
 
@@ -69,7 +64,8 @@ section.logo {
 }
 
 .logo-img {
-    background: url(http://www.writingfordesigners.com/wp-content/uploads/2017/04/33b869f90619e81763dbf1fccc896d8d.jpg) 50%/100% no-repeat;
+    background: url(http://www.writingfordesigners.com/wp-content/uploads/2017/04/33b869f90619e81763dbf1fccc896d8d.jpg)
+        50%/100% no-repeat;
     border-radius: 100%;
     width: 150px;
     height: 150px;
@@ -117,6 +113,11 @@ h1 {
     padding-right: 20px;
 }
 
+.pagenav span.page-active {
+    font-weight: bold;
+    padding-right: 20px;
+}
+
 section.comment {
     padding: 30px 0;
     border-bottom: 1px solid #ddd;
@@ -148,9 +149,9 @@ main {
     padding-right: 40px;
 }
 
-input[type=text],
-input[type=password],
-.commentform__text {
+input[type='text'],
+input[type='password'],
+textarea {
     border: 1px solid #ddd;
     padding: 10px 15px;
     border-radius: 2px;
@@ -158,13 +159,18 @@ input[type=password],
     outline: none;
 }
 
-input[type=text]:focus,
-input[type=password]:focus,
-.commentform__text:focus {
+textarea {
+    width: 100%;
+    height: 150px;
+}
+
+input[type='text']:focus,
+input[type='password']:focus,
+textarea:focus {
     border: 1px solid #bbb;
 }
 
-input[type=submit] {
+input[type='submit'] {
     padding: 10px 15px;
     cursor: pointer;
     border-radius: 2px;
@@ -185,8 +191,14 @@ section.commentform {
 }
 
 .avatar {
-    width: 100px;
-    height: 100px;
+    width: 50px;
+    height: 50px;
     border-radius: 100%;
     background: url(/img/avatar_url.png);
+    margin-right: 10px;
+}
+
+.mini-profile {
+    display: flex;
+    align-items: center;
 }

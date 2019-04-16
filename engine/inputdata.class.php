@@ -5,10 +5,22 @@ class InputData
     {
         try {
             if (self::issetVal($_POST, 'addcomment')) {
-                Main::includeClass('components', 'comments');
+                // Main::includeClass('components', 'comments');
+                Main::includeClass('components', 'postingform');
                 $text = trim(filter_input(INPUT_POST, 'text', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE));
                 if ($text) {
-                    Comments::addComment($text, Components::readSettings('comments'), ['p_module' => self::getVal($_POST, 'p_module')]);
+                    PostingForm::addComment($text, Components::readSettings('postingform'), ['p_module' => self::getVal($_POST, 'p_module')]);
+                } else {
+                    throw new PostingFormException("Напишите что-нибудь", PostingFormException::EMPTY_FIELD);
+                }
+            }
+
+            if (self::issetVal($_POST, 'addarticle')) {
+                Main::includeClass('modules', 'news');
+                $title = trim(filter_input(INPUT_POST, 'title', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE));
+                $text = trim(filter_input(INPUT_POST, 'text', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE));
+                if ($text) {
+                    News::addArticle($text, $title);
                 } else {
                     throw new PostingFormException("Напишите что-нибудь", PostingFormException::EMPTY_FIELD);
                 }

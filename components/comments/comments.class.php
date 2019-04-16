@@ -3,6 +3,7 @@ class Comments extends Components
 {
     public $params;
     public $current_comment;
+    public static $error;
 
     public function __construct($params)
     {
@@ -24,7 +25,11 @@ class Comments extends Components
 
             $comments = self::getComments($direction, $from, $limit, $table, $cur_id);
             if (!$comments) {
-                return "Нет комментариев";
+                if ($cur_page) {
+                    header("Location: /news/$cur_id/");
+                } else {
+                    return "Нет комментариев";
+                }
             }
 
             ob_start();
@@ -35,7 +40,7 @@ class Comments extends Components
 
             return trim(ob_get_clean());
         } catch (SQLException $e) {
-            return $e->getMessage();
+            Comments::$error = $e->getMessage();
         }
     }
 
@@ -54,7 +59,7 @@ class Comments extends Components
         $result = $DB->query($query);
 
         if (!$result->num_rows) {
-            throw new SQLException('Нет комментариев', SQLException::EMPTY_RESPONSE);
+            return [];
         }
         
         while ($data = $result->fetch_assoc()) {
@@ -62,31 +67,6 @@ class Comments extends Components
         }
         
         return $comments;
-    }
-
-    public static function addComment($text, $component_settings, $component_params)
-    {
-        try {
-            global $DB;
-
-            $table = $component_settings['SQLTABLES'][$component_params['p_module']];
-            $cur_id = filter_input(INPUT_GET, 'id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
-            $cur_user_name = $_SESSION['user_data']['id'];
-            
-            if (!$cur_id) {
-                throw new RequestException("Невозможно добавить коментарий", RequestException::GET_PARAM_NOT_EXISTS);
-            }
-
-            if (!$cur_user_name) {
-                throw new UserException("Для добавления комментария необходимо войти в аккаунт", UserException::NOT_SIGNED_IN);
-            }
-
-            $result = $DB->query('INSERT INTO ' . $table . ' (article_id, user_id, text) VALUES ("' . $cur_id . '", "' . $cur_user_name . '", "' . $text . '")');
-        } catch (RequestException $e) {
-            echo $e->getMessage();
-        } catch (UserException $e) {
-            echo $e->getMessage();
-        }
     }
     
     public static function getCommentField($field)

@@ -15,23 +15,22 @@ class PageNavigator extends Components
     {
         global $DB;
 
-        {// Получаем зависимости и формируем название таблицы для получения данных
-            $p_module = self::getParam('pagenavigator', 'p_module');
-            $table = $p_module;
+        $p_component = null;
 
-            if (self::getParam('pagenavigator', 'p_component')) {
-                $p_component = self::getParam('pagenavigator', 'p_component');
-                $table .= '_' . $p_component;
-            }
+        // Получаем зависимости и формируем название таблицы для получения данных
+        $p_module = self::getParam('pagenavigator', 'p_module');
+        $table = $p_module;
+
+        if (self::getParam('pagenavigator', 'p_component')) {
+            $p_component = self::getParam('pagenavigator', 'p_component');
+            $table .= '_' . $p_component;
         }
 
-        {
-            $table = self::getSetting('pagenavigator', 'SQLTABLES')[$table];
-            $cur_id = filter_input(INPUT_GET, 'id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
-            $cur_page = filter_input(INPUT_GET, 'page_id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
-            if (!$cur_page) {
-                $cur_page = 1;
-            }
+        $table = self::getSetting('pagenavigator', 'SQLTABLES')[$table];
+        $cur_id = filter_input(INPUT_GET, 'id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
+        $cur_page = filter_input(INPUT_GET, 'page_id', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE);
+        if (!$cur_page) {
+            $cur_page = 1;
         }
 
         $query = self::getPageNavPanelQuery($p_component, $table, $cur_id);
@@ -48,36 +47,10 @@ class PageNavigator extends Components
         }
 
         $pages_num = ceil($records / $limit); // Получаем кол-во страниц
+        $page_nav = '';
 
-        { // Проверяем необходимость вывода элементов и возвращаем их
-            switch ($cur_page) {
-                case 1:
-                    $left = false;
-                    $right = true;
-                    break;
-                case $pages_num:
-                    $left = true;
-                    $right = false;
-                    break;
-                case $cur_page > 1 && $cur_page < $pages_num:
-                    $left = true;
-                    $right = true;
-            }
-
-            if ($left) {
-                $page_nav .= '<a href="/'.$p_module;
-                if ($cur_id) {
-                    $page_nav .= '/'.$cur_id;
-                }
-                $page_nav .= '/page-'.($cur_page - 1).'/">Назад</a>';
-            }
-            if ($right) {
-                $page_nav .= '<a href="/'.$p_module;
-                if ($cur_id) {
-                    $page_nav .= '/'.$cur_id;
-                }
-                $page_nav .= '/page-'.($cur_page + 1).'/">Вперёд</a>';
-            }
+        for ($page = 1; $page <= $pages_num; $page++) {
+            $page_nav .= sprintf(($cur_page == $page) ? "<span class='page-active'>$page</span>" : "<a href='/%s%s/page-%d/'>%d</a>", $p_module, ($cur_id) ? '/' . $cur_id : '', $page, $page);
         }
 
         return $page_nav;

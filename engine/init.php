@@ -27,7 +27,7 @@
     $COMPONENTS = [];
     $SETTINGS = [
         "modules" => [
-            "news", "logform"
+            "news", "logform", "pages"
         ],
         "components" => [
             "postingform", "pagenavigator", "comments"

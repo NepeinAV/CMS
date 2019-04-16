@@ -1,4 +1,5 @@
 <section class="commentform">
+    <?echo PostingForm::$error;?>
     <form name="commentform" method="post">
         <textarea name="text" class="commentform__text" noresize></textarea>
         <input type="hidden" name="p_module" value="<?echo Components::getParam('postingform', 'p_module');?>">

@@ -4,6 +4,7 @@ class News extends Modules
 {
     public $params;
     public $current_article = undefined;
+    public static $error = '';
 
     public function __construct($params)
     {
@@ -26,7 +27,11 @@ class News extends Modules
 
         $articles = self::getArticles($direction, $from, $limit);
         if (!$articles) {
-            return 'Нет новостей';
+            if ($cur_page) {
+                header("Location: /news/");
+            } else {
+                return 'Нет новостей';
+            }
         }
 
         ob_start();
@@ -36,6 +41,38 @@ class News extends Modules
         }
 
         return trim(ob_get_clean());
+    }
+
+    public static function addArticle($text, $title)
+    {
+        try {
+            global $DB;
+
+            $user_id = User::getCurrUserData('id');
+
+            if (!$title || !$text) {
+                throw new RequestException("Невозможно добавить новость", RequestException::GET_PARAM_NOT_EXISTS);
+            }
+
+            if (!$user_id) {
+                throw new UserException("Для добавления новостей необходимо войти в аккаунт", UserException::NOT_SIGNED_IN);
+            }
+            
+            if (strlen($title) < 10 || strlen($text) < 10) {
+                throw new InputDataException("Заголовок и текст новости должны быть длиннее 10 символов", InputDataException::SHORT_FIELD);
+            }
+
+            echo "INSERT INTO news (title, text, user_id) VALUES (\"$title\", \"$text\", \"$user_id\")";
+            $result = $DB->query("INSERT INTO news (title, text, user_id) VALUES (\"$title\", \"$text\", \"$user_id\")");
+
+            header("Location: /news/");
+        } catch (RequestException $e) {
+            News::$error = $e->getMessage();
+        } catch (UserException $e) {
+            News::$error = $e->getMessage();
+        } catch (InputDataException $e) {
+            @News::$error = $e->getMessage();
+        }
     }
 
     private static function getArticles($direction, $from, $limit)
@@ -66,7 +103,7 @@ class News extends Modules
         if ($cur_id && !self::getParam('news', 'from') && !self::getParam('news', 'limit')) {
             $result = $DB->query('SELECT ' . $field . ' FROM news WHERE id=' . $cur_id);
             $field = filter_var($result = $result->fetch_assoc()[$field], FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
-            return (result != false) ? $field : false;
+            return ($result != false) ? $field : false;
         } else {
             $field = filter_var(end($MODULES['news'])->current_article[$field], FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
             return $field;
