@@ -5,7 +5,6 @@ class InputData
     {
         try {
             if (self::issetVal($_POST, 'addcomment')) {
-                // Main::includeClass('components', 'comments');
                 Main::includeClass('components', 'postingform');
                 $text = trim(filter_input(INPUT_POST, 'text', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE));
                 if ($text) {

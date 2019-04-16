@@ -1,9 +1,7 @@
 <?php
 class User
 {
-    public function __construct()
-    {
-    }
+    public static $error;
 
     public static function regUser($name, $password, $passwordr)
     {
@@ -14,12 +12,16 @@ class User
                 $password = md5(md5($password));
                 $result = $DB->query('INSERT INTO users (name, password) VALUES ("' . $name . '","' . $password . '")');
                 if (!$result) {
-                    return "Ошибка базы данных";
+                    User::$error = "Ошибка базы данных";
                 } else {
                     User::signIn($name, $passwordr);
                     header('Location: /');
                 }
+            } else {
+                User::$error = "Пароли не совпадают";
             }
+        } else {
+            User::$error = "Используются запрещённые символы, либо слишком короткий логин или пароль";
         }
     }
 
@@ -33,7 +35,7 @@ class User
                 $_SESSION['user_data'] = $result->fetch_assoc();
             }
         } else {
-            return 'Введите все данные';
+            User::$error = 'Введите все данные';
         }
     }
 

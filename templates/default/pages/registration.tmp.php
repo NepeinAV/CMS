@@ -19,6 +19,7 @@
             <div class="flex_c wrap">
                 <main>
                     <h1>Регистрация</h1>
+                    <?echo User::$error;?>
                     <form name="reg_user_form" class="reguserform" method="post">
                         <input type="text" name="name" placeholder="Логин">
                         <input type="password" name="password" placeholder="Пароль">
