@@ -12,22 +12,20 @@
 </head>
 
 <body>
-
     <?echo Template::addTmp('header', 'news');?>
-
-        <?echo Template::addTmp('menu', 'news');?>
-            <div class="flex_c wrap">
-                <main>
-                    <h1>Регистрация</h1>
-                    <?echo User::$error;?>
-                    <form name="reg_user_form" class="reguserform" method="post">
-                        <input type="text" name="name" placeholder="Логин">
-                        <input type="password" name="password" placeholder="Пароль">
-                        <input type="password" name="passwordr" placeholder="Повторите пароль">
-                        <input type="submit" name="reg_user" value="Зарегистрироваться">
-                    </form>
-                </main>
-            </div>
+    <?echo Template::addTmp('menu', 'news');?>
+    <div class="flex_c wrap">
+        <main>
+            <h1>Регистрация</h1>
+            <?echo User::$error;?>
+            <form name="reg_user_form" class="reguserform" method="post">
+                <input type="text" name="name" placeholder="Логин">
+                <input type="password" name="password" placeholder="Пароль">
+                <input type="password" name="passwordr" placeholder="Повторите пароль">
+                <input type="submit" name="reg_user" value="Зарегистрироваться">
+            </form>
+        </main>
+    </div>
 </body>
 
 </html>

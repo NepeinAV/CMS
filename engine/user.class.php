@@ -33,6 +33,10 @@ class User
             $result = $DB->query('SELECT id, name, type, avatar_url FROM users WHERE name="' . $name . '" AND password="' . $password . '"');
             if ($result->num_rows) {
                 $_SESSION['user_data'] = $result->fetch_assoc();
+                $redirect = filter_input(INPUT_POST, 'redirect_url', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
+                header("Location: $redirect");
+            } else {
+                User::$error = 'Логин/пароль не совпадают';
             }
         } else {
             User::$error = 'Введите все данные';

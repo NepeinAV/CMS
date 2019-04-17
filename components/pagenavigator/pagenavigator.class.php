@@ -1,5 +1,4 @@
 <?php
-
 class PageNavigator extends Components
 {
     public $params;

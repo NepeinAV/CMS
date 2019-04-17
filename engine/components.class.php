@@ -1,7 +1,7 @@
 <?php
 class Components
 {
-    public static function getComponent($action = 'index', $component, $params)
+    public static function getComponent($action = 'index', $component, $params = [])
     {
         try {
             global $COMPONENTS;
