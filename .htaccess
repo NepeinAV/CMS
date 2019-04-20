@@ -12,6 +12,8 @@ php_value register_globals 0
     RewriteRule ^index.php$ / [L,R=301]
     RewriteRule ^404/$ /404.php [L]
     RewriteRule ^logout/$ ?logout=true [L]
+    RewriteRule ^registration/$ ?module=regform:page [L]
+    RewriteRule ^login/$ ?module=logform:page [L]
     # Specially for 'news' module
     RewriteRule ^(news)/$ ?module=$1 [L]
     RewriteRule ^(news)/add/$ ?module=$1:add [L]

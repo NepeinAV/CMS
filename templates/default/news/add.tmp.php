@@ -17,7 +17,7 @@
     <?echo Template::addTmp('menu', 'news');?>
     <div class="flex_c wrap">
         <main>
-            <?if (User::isUserSignedIn()): ?>
+            <?global $USER; if ($USER->hasPermission('ADD_ARTICLES')): ?>
                 <h1>Добавление новости</h1>
                 <?echo News::$error;?>
                 <form name="addarticle_form" class="reguserform" method="post">

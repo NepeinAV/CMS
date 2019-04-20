@@ -1,0 +1,1 @@
+<?print(News::showArticles(false));?>

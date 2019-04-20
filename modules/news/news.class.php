@@ -46,9 +46,9 @@ class News extends Modules
     public static function addArticle($text, $title)
     {
         try {
-            global $DB;
+            global $DB, $USER;
 
-            $user_id = User::getCurrUserData('id');
+            $user_id = $USER->getCurrUserData('id');
 
             if (!$title || !$text) {
                 throw new RequestException("Невозможно добавить новость", RequestException::GET_PARAM_NOT_EXISTS);

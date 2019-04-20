@@ -12,4 +12,15 @@ class Template
             return 'Шаблон не найден';
         }
     }
+
+    public static function includeStatic($path, $module = __MODULE)
+    {
+        $template = __TEMPLATE;
+        $static = "/templates/$template/$module/$path";
+        if (file_exists('.' . $static)) {
+            return $static;
+        } else {
+            return 'Файл не найден';
+        }
+    }
 }

@@ -12,14 +12,16 @@
 </head>
 
 <body>
-    <?echo Template::addTmp('header', 'news');?>
-    <?echo Template::addTmp('menu', 'news');?>
-    <div class="flex_c wrap">
-        <main>
-            <h1>Авторизация</h1>
-            <?echo Modules::getModule('index', 'logform');?>
-        </main>
-    </div>
+    <?global $USER; if (!$USER->isUserSignedIn()):?>
+        <div class="flex_c wrap">
+            <main>
+                <h1>Авторизация</h1>
+                <?echo Modules::getModule('index', 'logform');?>
+            </main>
+        </div>
+    <?else:
+        echo '<script>window.location.replace("/")</script>';
+    endif;?>
 </body>
 
 </html>

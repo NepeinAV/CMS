@@ -1,7 +1,13 @@
 <?php
-class User
+class User extends Permission
 {
     public static $error;
+    public $user;
+
+    public function __construct()
+    {
+        $this->user = (isset($_SESSION['user_data'])) ? $_SESSION['user_data']['id'] : 0;
+    }
 
     public static function regUser($name, $password, $passwordr)
     {
@@ -43,29 +49,26 @@ class User
         }
     }
 
-    public static function logOutUser()
+    public function logOutUser()
     {
-        if (isset($_SESSION['user_data'])) {
+        if ($this->isUserSignedIn()) {
             unset($_SESSION['user_data']);
+            $this->user = 0;
             header('Location: /');
         }
     }
 
-    public static function getCurrUserData($field)
+    public function getCurrUserData($field)
     {
-        if (isset($_SESSION['user_data'][$field])) {
-            return $_SESSION['user_data'][$field];
+        if ($this->isUserSignedIn()) {
+            return User::getUserDataByID($this->user, $field);
         }
         return false;
     }
 
-    public static function isUserSignedIn()
+    public function isUserSignedIn()
     {
-        if (isset($_SESSION['user_data'])) {
-            return true;
-        }
-        
-        return false;
+        return boolval($this->user);
     }
 
     public static function getUserDataByID($user_id, $field)

@@ -3,14 +3,19 @@ class InputData
 {
     public static function check()
     {
+        global $USER;
         try {
             if (self::issetVal($_POST, 'addcomment')) {
                 Main::includeClass('components', 'postingform');
                 $text = trim(filter_input(INPUT_POST, 'text', FILTER_DEFAULT, FILTER_NULL_ON_FAILURE));
-                if ($text) {
-                    PostingForm::addComment($text, Components::readSettings('postingform'), ['p_module' => self::getVal($_POST, 'p_module')]);
-                } else {
-                    throw new PostingFormException("Напишите что-нибудь", PostingFormException::EMPTY_FIELD);
+                try {
+                    if ($text) {
+                        PostingForm::addComment($text, Components::readSettings('postingform'), ['p_module' => self::getVal($_POST, 'p_module')]);
+                    } else {
+                        throw new PostingFormException("Напишите что-нибудь", PostingFormException::EMPTY_FIELD);
+                    }
+                } catch (PostingFormException $e) {
+                    PostingForm::$error = $e->getMessage();
                 }
             }
 
@@ -42,7 +47,7 @@ class InputData
     
             if (self::getVal($_GET, 'logout')) {
                 Main::includeEngineClass('user');
-                User::logOutUser();
+                $USER->logOutUser();
             }
         } catch (PostingFormException $e) {
             echo $e->getMessage();
