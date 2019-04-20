@@ -1,80 +1,204 @@
+:root {
+    --main-color: #33cdc7;
+    --link-color: #4a0971;
+    --h1-size: 29px;
+    --max-width: 1280px;
+}
+
 * {
     box-sizing: border-box;
 }
 
 body {
     background: white;
-    font: 400 16px Georgia, Cambria, 'Times New Roman', Times, serif;
+    font: 400 16px 'Open Sans';
     margin: 0;
-}
-
-main {
-    display: flex;
-}
-
-.regform {
-    display: flex;
-    /* align-self: center; */
-    margin: auto;
-    flex-direction: column;
-    align-items: center;
-    width: 400px;
-    border-radius: 10px;
-    background: white;
-    box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.05);
-    padding: 30px;
-}
-
-.regform h1 {
-    font-size: 25px;
-    margin: 0;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-}
-
-.regform form {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
-
-.regform input:not(:last-child) {
-    margin-bottom: 10px;
-}
-
-.regform input[type='submit'] {
-    margin-top: 5px;
 }
 
 input {
-    font: inherit;
-    padding: 13px 15px;
-    border-radius: 5px;
+    border: none;
     outline: none;
+}
+
+a {
+    color: black;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #4a0971;
+    text-decoration: underline;
+}
+
+a:focus {
+    color: black;
+    text-decoration: none;
+}
+
+header.header {
+    margin: 0 auto;
+}
+
+.wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+section.menu {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+section.menu a {
+    color: #4a0971;
+    padding: 18px 20px;
+}
+
+section.logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo-img {
+    background: url(http://www.writingfordesigners.com/wp-content/uploads/2017/04/33b869f90619e81763dbf1fccc896d8d.jpg)
+        50%/100% no-repeat;
+    border-radius: 100%;
+    width: 150px;
+    height: 150px;
+}
+
+.logo-text {
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+.wrap {
+    padding: 0 40px;
+}
+
+article {
+    border-bottom: 1px solid #eee;
+    padding: 0px 0 30px 0;
+}
+
+article:last-of-type {
+    border: none;
+}
+
+section.comment:last-of-type {
+    border: none;
+}
+
+.article__title,
+h1 {
+    margin-left: -2px;
+    font: 800 30px Calibri;
+    text-transform: uppercase;
+}
+
+.article__info {
+    margin-top: 20px;
+}
+
+.pagenav {
+    margin: 30px 0 30px 0;
+    text-align: center;
+}
+
+.pagenav a {
+    padding-right: 20px;
+}
+
+.pagenav span.page-active {
+    font-weight: bold;
+    padding-right: 20px;
+}
+
+section.comment {
+    padding: 30px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.comment__info {
+    margin-bottom: 20px;
+}
+
+.comments {
+    margin-top: 20px;
+}
+
+.comments__title {
+    font: 800 25px Calibri;
+}
+
+.flex_c {
+    display: flex;
+}
+
+aside {
+    width: 300px;
+    margin-top: 27px;
+}
+
+main {
+    width: 100%;
+    padding-right: 40px;
 }
 
 input[type='text'],
 input[type='password'],
 textarea {
-    transition: border 0.2s ease-in-out;
-    border: 1px solid #f4f4f4;
+    border: 1px solid #ddd;
+    padding: 10px 15px;
+    border-radius: 2px;
+    margin-bottom: 10px;
+    outline: none;
+}
+
+textarea {
+    width: 100%;
+    height: 150px;
 }
 
 input[type='text']:focus,
 input[type='password']:focus,
 textarea:focus {
-    border: 1px solid #e0e0e0;
+    border: 1px solid #bbb;
 }
 
 input[type='submit'] {
-    border: none;
-    background: rgb(136, 136, 231);
-    color: white;
+    padding: 10px 15px;
     cursor: pointer;
-    transition: background 0.2s ease-in-out;
-    text-transform: uppercase;
+    border-radius: 2px;
 }
 
-input[type='submit']:hover {
-    background: rgb(106, 106, 230);
+section.commentform {
+    padding-bottom: 30px;
+}
+
+.commentform__text {
+    width: 100%;
+    height: 100px;
+    resize: none;
+}
+
+.reguserform input {
+    display: block;
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    background: url(/img/avatar_url.png);
+    margin-right: 10px;
+}
+
+.mini-profile {
+    display: flex;
+    align-items: center;
 }
