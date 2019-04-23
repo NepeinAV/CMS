@@ -1027,3 +1027,8 @@ textarea.input {
 .pagenav .page-active {
     font-weight: 900;
 }
+
+.avatar {
+    height: 40px;
+    border-radius: 100%;
+}

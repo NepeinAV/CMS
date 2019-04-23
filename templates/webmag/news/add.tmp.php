@@ -9,6 +9,7 @@
 
 		<title><?echo Modules::getModuleTitle();?> - Добавление новости</title>
 
+		<script src="<?echo Template::includeStatic('js/jquery.min.js');?>"></script>
 		<!-- Google font -->
 		<link href="https://fonts.googleapis.com/css?family=Nunito+Sans:700%7CNunito:300,600" rel="stylesheet"> 
 
@@ -27,17 +28,50 @@
 		  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
-
+		<link href="<?echo Template::includeStatic('css/summernote-lite.css');?>" rel="stylesheet">
+		<script src="<?echo Template::includeStatic('js/summernote-lite.js');?>"></script>
     </head>
 
 <body>
-
     <?echo Template::addTmp('header', 'news');?>
     <div class="section">
 		<div class="container">
             <?echo Components::getComponent('addarticle', 'postingform');?>
         </div>
     </div>
+
+		<script>
+			$(document).ready(function() {
+				$('#summernote').summernote({
+					toolbar: [
+						// [groupName, [list of button]]
+						['style'],
+						['style', ['bold', 'italic', 'underline', 'clear'],],
+						['font', ['strikethrough', 'superscript', 'subscript']],
+						['fontsize', ['fontsize']],
+						['color', ['color']],
+						['para', ['ul', 'ol', 'paragraph']],
+						['height', ['height']]
+					],
+					popover: {
+						air: [
+							['color', ['color']],
+							['font', ['bold', 'underline', 'clear']]
+						]
+					},
+					placeholder: 'Введите текст новости',
+					height: 300, 
+					tabsize: 4,
+				});
+
+				document.querySelector('#send-article').addEventListener('click', e => {
+                e.preventDefault();
+                const code = $('#summernote').summernote('code');
+                document.querySelector('input[name="text"]').value = code;
+                document.querySelector('form[name="addarticle_form"]').submit();
+            });
+			});	
+		</script>
 </body>
 
 </html>

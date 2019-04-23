@@ -2,6 +2,11 @@
     class DBconnect
     {
         private $connection;
+
+        public function __get($insert_id)
+        {
+            return $this->connection->insert_id;
+        }
         
         public function __construct()
         {
@@ -22,6 +27,16 @@
         public function query($query)
         {
             $result = $this->connection->query($query);
+            // echo var_dump($result);
+            if ($result === false) {
+                throw new SQLException("Ошибка в запросе", SQLException::WRONG_QUERY);
+            }
+            return $result;
+        }
+
+        public function prepare($query)
+        {
+            $result = $this->connection->prepare($query);
             if ($result === false) {
                 throw new SQLException("Ошибка в запросе", SQLException::WRONG_QUERY);
             }

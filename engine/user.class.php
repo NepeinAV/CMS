@@ -13,21 +13,25 @@ class User extends Permission
     {
         global $DB;
 
-        if (count(preg_grep('/^[a-zA-Z0-9_]{4,}$/', [$name, $password, $passwordr])) == 3) {
-            if ($password === $passwordr) {
-                $password = md5(md5($password));
-                $result = $DB->query('INSERT INTO users (name, password) VALUES ("' . $name . '","' . $password . '")');
-                if (!$result) {
-                    User::$error = "Ошибка базы данных";
+        if (count(preg_grep('/^[a-zA-Z0-9_]*$/', [$name, $password, $passwordr])) == 3) {
+            if (strlen($name) >= 4 && strlen($password) >= 4) {
+                if ($password === $passwordr) {
+                    $password = md5(md5($password));
+                    $result = $DB->query('INSERT INTO users (name, password) VALUES ("' . $name . '","' . $password . '")');
+                    if (!$result) {
+                        User::$error = "Ошибка базы данных";
+                    } else {
+                        User::signIn($name, $passwordr);
+                        header('Location: /');
+                    }
                 } else {
-                    User::signIn($name, $passwordr);
-                    header('Location: /');
+                    User::$error = "Пароли не совпадают";
                 }
             } else {
-                User::$error = "Пароли не совпадают";
+                User::$error = "Слишком короткий логин или пароль(<4)";
             }
         } else {
-            User::$error = "Используются запрещённые символы, либо слишком короткий логин или пароль";
+            User::$error = "Используются запрещённые символы(разрешёны A-Z, a-z, 0-9, _)";
         }
     }
 

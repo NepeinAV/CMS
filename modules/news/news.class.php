@@ -43,16 +43,18 @@ class News extends Modules
         return trim(ob_get_clean());
     }
 
-    public static function addArticle($text, $title)
+    public static function addArticle($text, $title, $image)
     {
         try {
             global $DB, $USER;
 
             $user_id = $USER->getCurrUserData('id');
+            $file_name = md5($image['name'] . $USER->user . time());
+            $file_type = end(explode('.', $image['name']));
 
-            if (!$title || !$text) {
-                throw new RequestException("Невозможно добавить новость", RequestException::GET_PARAM_NOT_EXISTS);
-            }
+            $file_path = '/img/upload/' . $file_name . '.' . $file_type;
+
+            move_uploaded_file($image['tmp'], $file_path);
 
             if (!$user_id) {
                 throw new UserException("Для добавления новостей необходимо войти в аккаунт", UserException::NOT_SIGNED_IN);
@@ -62,14 +64,15 @@ class News extends Modules
                 throw new InputDataException("Заголовок и текст новости должны быть длиннее 10 символов", InputDataException::SHORT_FIELD);
             }
 
-            echo "INSERT INTO news (title, text, user_id) VALUES (\"$title\", \"$text\", \"$user_id\")";
-            $result = $DB->query("INSERT INTO news (title, text, user_id) VALUES (\"$title\", \"$text\", \"$user_id\")");
+            $prepared = $DB->prepare("INSERT INTO news (title, text, user_id, image) VALUES (?, ?, ?, ?)");
+            $prepared->bind_param('ssis', $title, $text, $user_id, $file_path);
+            $prepared->execute();
 
-            header("Location: /news/");
+            header("Location: /news/" . $DB->insert_id);
         } catch (RequestException $e) {
-            News::$error = $e->getMessage();
+            @News::$error = $e->getMessage();
         } catch (UserException $e) {
-            News::$error = $e->getMessage();
+            @News::$error = $e->getMessage();
         } catch (InputDataException $e) {
             @News::$error = $e->getMessage();
         }
@@ -102,10 +105,10 @@ class News extends Modules
 
         if ($cur_id && !self::getParam('news', 'from') && !self::getParam('news', 'limit')) {
             $result = $DB->query('SELECT ' . $field . ' FROM news WHERE id=' . $cur_id);
-            $field = filter_var($result = $result->fetch_assoc()[$field], FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
+            $field = $result->fetch_assoc()[$field];
             return ($result != false) ? $field : false;
         } else {
-            $field = filter_var(end($MODULES['news'])->current_article[$field], FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
+            $field = end($MODULES['news'])->current_article[$field];
             return $field;
         }
     }

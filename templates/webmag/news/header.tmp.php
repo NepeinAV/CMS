@@ -23,6 +23,7 @@
                     </div>
                 <?else:?>
                     <div class="nav-btns">
+                        <img src="<?global $USER; echo $USER->getCurrUserData('avatar_url');?>" class="avatar">
                         <button class="aside-btn"><a href="/logout/">Выйти</a></button>
                     </div>
                 <?endif;?>
